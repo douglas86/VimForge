@@ -275,3 +275,426 @@ times in msec
 016.046  000.166: first screen update
 016.048  000.001: --- NVIM STARTED ---
 
+--- Startup times for process: Primary/TUI ---
+
+times in msec
+ clock   self+sourced   self:  sourced script
+ clock   elapsed:              other lines
+
+000.007  000.007: --- NVIM STARTING ---
+000.447  000.440: event init
+000.652  000.205: early init
+000.775  000.122: locale set
+000.890  000.115: init first window
+001.601  000.711: inits 1
+001.624  000.022: window checked
+001.630  000.006: parsing arguments
+002.614  000.074  000.074: require('vim.shared')
+002.762  000.075  000.075: require('vim.inspect')
+002.850  000.065  000.065: require('vim._options')
+002.853  000.231  000.091: require('vim._editor')
+002.855  000.369  000.064: require('vim._init_packages')
+002.859  000.860: init lua interpreter
+003.869  001.010: --- NVIM STARTED ---
+
+--- Startup times for process: Embedded ---
+
+times in msec
+ clock   self+sourced   self:  sourced script
+ clock   elapsed:              other lines
+
+000.001  000.001: --- NVIM STARTING ---
+000.293  000.292: event init
+000.446  000.152: early init
+000.569  000.124: locale set
+000.662  000.093: init first window
+001.058  000.396: inits 1
+001.075  000.017: window checked
+001.079  000.004: parsing arguments
+001.928  000.066  000.066: require('vim.shared')
+002.070  000.073  000.073: require('vim.inspect')
+002.151  000.060  000.060: require('vim._options')
+002.153  000.218  000.084: require('vim._editor')
+002.156  000.371  000.087: require('vim._init_packages')
+002.160  000.710: init lua interpreter
+002.261  000.101: expanding arguments
+002.285  000.024: inits 2
+002.819  000.534: init highlight
+002.820  000.001: waiting for UI
+003.038  000.218: done waiting for UI
+003.058  000.020: clear screen
+003.183  000.019  000.019: require('vim.keymap')
+003.899  000.838  000.819: require('vim._defaults')
+003.904  000.008: init default mappings & autocommands
+004.784  000.086  000.086: sourcing /snap/nvim/3186/usr/share/nvim/runtime/ftplugin.vim
+004.868  000.043  000.043: sourcing /snap/nvim/3186/usr/share/nvim/runtime/indent.vim
+005.275  000.121  000.121: require('cors.mappings')
+005.423  000.084  000.084: require('cors.settings')
+005.500  000.075  000.075: require('cors.autocommands')
+006.499  000.892  000.892: require('lazy')
+006.603  000.086  000.086: require('ffi')
+006.693  000.035  000.035: require('vim.fs')
+006.845  000.146  000.146: require('vim.uri')
+006.862  000.250  000.068: require('vim.loader')
+007.157  000.272  000.272: require('lazy.stats')
+007.365  000.180  000.180: require('lazy.core.util')
+007.622  000.255  000.255: require('lazy.core.config')
+007.835  000.075  000.075: require('lazy.core.handler')
+008.153  000.086  000.086: require('lazy.pkg')
+008.160  000.199  000.114: require('lazy.core.meta')
+008.170  000.334  000.134: require('lazy.core.plugin')
+008.179  000.555  000.147: require('lazy.core.loader')
+008.856  000.126  000.126: require('lazy.core.fragments')
+009.816  000.110  000.110: require('lazy.core.handler.event')
+009.820  000.177  000.067: require('lazy.core.handler.ft')
+009.901  000.078  000.078: require('lazy.core.handler.keys')
+009.952  000.049  000.049: require('lazy.core.handler.cmd')
+010.164  000.161  000.161: sourcing /snap/nvim/3186/usr/share/nvim/runtime/filetype.lua
+010.439  000.185  000.185: sourcing /home/douglas/.local/share/nvim/lazy/telescope.nvim/plugin/telescope.lua
+010.820  000.089  000.089: require('telescope._extensions')
+010.823  000.369  000.279: require('telescope')
+011.100  000.028  000.028: sourcing /home/douglas/.local/share/nvim/lazy/plenary.nvim/plugin/plenary.vim
+011.710  000.071  000.071: require('plenary.bit')
+011.760  000.046  000.046: require('plenary.functional')
+011.791  000.530  000.413: require('plenary.path')
+011.802  000.893  000.336: require('plenary.strings')
+011.836  000.031  000.031: require('telescope.deprecated')
+012.040  000.006  000.006: require('vim.F')
+012.060  000.090  000.084: require('plenary.log')
+012.078  000.177  000.087: require('telescope.log')
+012.492  000.113  000.113: require('plenary.compat')
+012.498  000.344  000.231: require('plenary.job')
+012.528  000.029  000.029: require('telescope.state')
+012.539  000.461  000.088: require('telescope.utils')
+012.543  000.706  000.068: require('telescope.sorters')
+013.377  002.552  000.922: require('telescope.config')
+013.969  000.031  000.031: sourcing /home/douglas/.local/share/nvim/lazy/nvim-web-devicons/plugin/nvim-web-devicons.vim
+014.897  000.611  000.611: require('nvim-web-devicons.icons-default')
+015.084  001.102  000.491: require('nvim-web-devicons')
+018.010  000.233  000.233: require('auto-save.config')
+018.067  000.022  000.022: require('auto-save.utils.data')
+018.090  000.022  000.022: require('auto-save.utils.colors')
+018.134  000.042  000.042: require('auto-save.utils.echo')
+018.139  000.124  000.037: require('auto-save')
+018.152  000.405  000.049: sourcing /home/douglas/.local/share/nvim/lazy/auto-save.nvim/plugin/auto-save.lua
+018.438  000.063  000.063: sourcing /home/douglas/.local/share/nvim/lazy/neo-tree.nvim/plugin/neo-tree.vim
+018.752  000.083  000.083: require('neo-tree.log')
+018.765  000.142  000.059: require('neo-tree.utils')
+019.032  000.074  000.074: require('nui.object')
+019.195  000.043  000.043: require('vim.version')
+020.018  000.920  000.877: require('nui.utils')
+020.028  000.994  000.074: require('nui.text')
+020.032  001.153  000.085: require('nui.line')
+020.124  000.035  000.035: require('nui.tree.util')
+020.131  000.098  000.063: require('nui.tree')
+020.200  000.022  000.022: require('nui.utils.buf_storage')
+020.245  000.044  000.044: require('nui.utils.autocmd')
+020.272  000.026  000.026: require('nui.utils.keymap')
+020.326  000.028  000.028: require('nui.layout.utils')
+020.329  000.056  000.028: require('nui.split.utils')
+020.336  000.204  000.056: require('nui.split')
+020.463  000.086  000.086: require('nui.popup.border')
+020.471  000.134  000.048: require('nui.popup')
+020.519  000.047  000.047: require('neo-tree.ui.highlights')
+020.632  000.070  000.070: require('nui.input')
+020.634  000.115  000.045: require('neo-tree.ui.popups')
+020.812  000.065  000.065: require('neo-tree.collections')
+020.816  000.130  000.066: require('neo-tree.events.queue')
+020.820  000.184  000.054: require('neo-tree.events')
+020.860  000.040  000.040: require('neo-tree.ui.windows')
+020.876  002.110  000.135: require('neo-tree.ui.renderer')
+021.303  000.084  000.084: require('neo-tree.sources.filesystem.lib.filter_external')
+021.492  000.084  000.084: require('plenary.iterators')
+021.494  000.125  000.041: require('neo-tree.sources.common.file-nesting')
+021.690  000.054  000.054: require('neo-tree.git.utils')
+021.693  000.115  000.061: require('neo-tree.git.status')
+021.825  000.132  000.132: require('neo-tree.git.ignored')
+021.831  000.336  000.090: require('neo-tree.git')
+021.836  000.531  000.070: require('neo-tree.sources.common.file-items')
+021.943  000.106  000.106: require('neo-tree.sources.filesystem.lib.fs_watch')
+022.408  000.146  000.146: require('plenary.tbl')
+022.419  000.255  000.109: require('plenary.vararg.rotate')
+022.420  000.341  000.086: require('plenary.vararg')
+022.495  000.075  000.075: require('plenary.errors')
+022.500  000.490  000.074: require('plenary.async.async')
+022.717  000.025  000.025: require('plenary.async.structs')
+022.721  000.057  000.032: require('plenary.async.control')
+022.725  000.134  000.077: require('plenary.async.util')
+022.726  000.225  000.091: require('plenary.async.tests')
+022.728  000.783  000.069: require('plenary.async')
+022.732  001.601  000.097: require('neo-tree.sources.filesystem.lib.fs_scan')
+022.762  000.029  000.029: require('neo-tree.ui.inputs')
+022.772  001.895  000.264: require('neo-tree.sources.manager')
+022.903  000.070  000.070: require('neo-tree.defaults')
+022.941  000.037  000.037: require('neo-tree.setup.mapping-helper')
+023.014  000.023  000.023: require('neo-tree.command.parser')
+023.037  000.022  000.022: require('neo-tree.command.completion')
+023.038  000.073  000.028: require('neo-tree.command')
+023.039  000.098  000.025: require('neo-tree.setup.netrw')
+023.042  000.269  000.064: require('neo-tree.setup')
+023.046  004.599  000.183: require('neo-tree')
+023.585  000.040  000.040: require('neo-tree.setup.deprecations')
+024.848  000.033  000.033: require('neo-tree.sources.filesystem.lib.globtopattern')
+024.853  000.090  000.057: require('neo-tree.sources.filesystem')
+024.908  000.023  000.023: require('neo-tree.sources.buffers.lib.items')
+024.911  000.054  000.031: require('neo-tree.sources.buffers')
+024.958  000.022  000.022: require('neo-tree.sources.git_status.lib.items')
+024.959  000.047  000.024: require('neo-tree.sources.git_status')
+025.150  000.026  000.026: require('neo-tree.sources.common.container')
+025.153  000.060  000.034: require('neo-tree.sources.common.components')
+025.192  000.122  000.062: require('neo-tree.sources.git_status.components')
+025.427  000.139  000.139: require('plenary.scandir')
+025.450  000.021  000.021: require('plenary')
+025.466  000.213  000.054: require('neo-tree.sources.filesystem.lib.fs_actions')
+025.491  000.023  000.023: require('neo-tree.sources.common.help')
+025.539  000.047  000.047: require('neo-tree.sources.common.preview')
+025.546  000.332  000.048: require('neo-tree.sources.common.commands')
+025.580  000.387  000.056: require('neo-tree.sources.git_status.commands')
+025.721  000.028  000.028: require('neo-tree.sources.filesystem.components')
+025.777  000.028  000.028: require('neo-tree.sources.filesystem.lib.filter')
+025.796  000.074  000.046: require('neo-tree.sources.filesystem.commands')
+025.951  000.025  000.025: require('neo-tree.sources.buffers.components')
+025.999  000.046  000.046: require('neo-tree.sources.buffers.commands')
+030.178  000.048  000.048: sourcing /snap/nvim/3186/usr/share/nvim/runtime/plugin/editorconfig.lua
+030.316  000.120  000.120: sourcing /snap/nvim/3186/usr/share/nvim/runtime/plugin/gzip.vim
+030.389  000.051  000.051: sourcing /snap/nvim/3186/usr/share/nvim/runtime/plugin/man.lua
+030.678  000.140  000.140: sourcing /snap/nvim/3186/usr/share/nvim/runtime/pack/dist/opt/matchit/plugin/matchit.vim
+030.688  000.285  000.145: sourcing /snap/nvim/3186/usr/share/nvim/runtime/plugin/matchit.vim
+030.803  000.100  000.100: sourcing /snap/nvim/3186/usr/share/nvim/runtime/plugin/matchparen.vim
+031.013  000.196  000.196: sourcing /snap/nvim/3186/usr/share/nvim/runtime/plugin/netrwPlugin.vim
+031.079  000.048  000.048: sourcing /snap/nvim/3186/usr/share/nvim/runtime/plugin/osc52.lua
+031.201  000.105  000.105: sourcing /snap/nvim/3186/usr/share/nvim/runtime/plugin/rplugin.vim
+031.257  000.039  000.039: sourcing /snap/nvim/3186/usr/share/nvim/runtime/plugin/shada.vim
+031.284  000.011  000.011: sourcing /snap/nvim/3186/usr/share/nvim/runtime/plugin/spellfile.vim
+031.390  000.065  000.065: sourcing /snap/nvim/3186/usr/share/nvim/runtime/plugin/tarPlugin.vim
+031.451  000.039  000.039: sourcing /snap/nvim/3186/usr/share/nvim/runtime/plugin/tohtml.lua
+031.481  000.011  000.011: sourcing /snap/nvim/3186/usr/share/nvim/runtime/plugin/tutor.vim
+031.611  000.113  000.113: sourcing /snap/nvim/3186/usr/share/nvim/runtime/plugin/zipPlugin.vim
+031.772  026.826  012.019: sourcing /home/douglas/.config/nvim/init.lua
+031.777  000.918: sourcing vimrc file(s)
+031.924  000.038  000.038: sourcing /snap/nvim/3186/usr/share/nvim/runtime/filetype.lua
+032.041  000.048  000.048: sourcing /snap/nvim/3186/usr/share/nvim/runtime/syntax/synload.vim
+032.097  000.147  000.098: sourcing /snap/nvim/3186/usr/share/nvim/runtime/syntax/syntax.vim
+032.104  000.143: inits 3
+033.002  000.899: reading ShaDa
+033.125  000.123: opening buffers
+033.164  000.038: BufEnter autocommands
+033.165  000.001: editing files in windows
+033.233  000.068: VimEnter autocommands
+033.252  000.019: UIEnter autocommands
+033.253  000.001: before starting main loop
+033.456  000.203: first screen update
+033.456  000.001: --- NVIM STARTED ---
+
+--- Startup times for process: Primary/TUI ---
+
+times in msec
+ clock   self+sourced   self:  sourced script
+ clock   elapsed:              other lines
+
+000.001  000.001: --- NVIM STARTING ---
+000.149  000.148: event init
+000.226  000.078: early init
+000.264  000.037: locale set
+000.314  000.050: init first window
+000.552  000.238: inits 1
+000.557  000.005: window checked
+000.559  000.002: parsing arguments
+000.996  000.032  000.032: require('vim.shared')
+001.074  000.040  000.040: require('vim.inspect')
+001.119  000.034  000.034: require('vim._options')
+001.120  000.121  000.047: require('vim._editor')
+001.121  000.200  000.047: require('vim._init_packages')
+001.124  000.365: init lua interpreter
+001.767  000.643: --- NVIM STARTED ---
+
+--- Startup times for process: Embedded ---
+
+times in msec
+ clock   self+sourced   self:  sourced script
+ clock   elapsed:              other lines
+
+000.001  000.001: --- NVIM STARTING ---
+000.258  000.257: event init
+000.370  000.112: early init
+000.448  000.078: locale set
+000.514  000.066: init first window
+000.891  000.377: inits 1
+000.910  000.019: window checked
+000.914  000.004: parsing arguments
+001.656  000.057  000.057: require('vim.shared')
+001.785  000.062  000.062: require('vim.inspect')
+001.858  000.052  000.052: require('vim._options')
+001.861  000.197  000.082: require('vim._editor')
+001.863  000.308  000.053: require('vim._init_packages')
+001.864  000.643: init lua interpreter
+001.968  000.104: expanding arguments
+002.000  000.032: inits 2
+002.479  000.479: init highlight
+002.485  000.007: waiting for UI
+002.678  000.193: done waiting for UI
+002.699  000.021: clear screen
+002.792  000.010  000.010: require('vim.keymap')
+003.341  000.638  000.628: require('vim._defaults')
+003.344  000.007: init default mappings & autocommands
+004.026  000.062  000.062: sourcing /snap/nvim/3186/usr/share/nvim/runtime/ftplugin.vim
+004.105  000.037  000.037: sourcing /snap/nvim/3186/usr/share/nvim/runtime/indent.vim
+004.393  000.090  000.090: require('cors.mappings')
+004.526  000.073  000.073: require('cors.settings')
+004.598  000.068  000.068: require('cors.autocommands')
+005.387  000.628  000.628: require('lazy')
+005.422  000.019  000.019: require('ffi')
+005.589  000.087  000.087: require('vim.fs')
+005.734  000.109  000.109: require('vim.uri')
+005.747  000.314  000.118: require('vim.loader')
+005.936  000.171  000.171: require('lazy.stats')
+006.040  000.086  000.086: require('lazy.core.util')
+006.139  000.097  000.097: require('lazy.core.config')
+006.307  000.060  000.060: require('lazy.core.handler')
+006.548  000.087  000.087: require('lazy.pkg')
+006.554  000.158  000.071: require('lazy.core.meta')
+006.558  000.249  000.091: require('lazy.core.plugin')
+006.564  000.422  000.113: require('lazy.core.loader')
+007.252  000.070  000.070: require('lazy.core.fragments')
+007.895  000.075  000.075: require('lazy.core.handler.event')
+007.898  000.191  000.117: require('lazy.core.handler.ft')
+007.978  000.077  000.077: require('lazy.core.handler.keys')
+008.081  000.099  000.099: require('lazy.core.handler.cmd')
+008.547  000.390  000.390: sourcing /snap/nvim/3186/usr/share/nvim/runtime/filetype.lua
+008.835  000.033  000.033: sourcing /home/douglas/.local/share/nvim/lazy/plenary.nvim/plugin/plenary.vim
+009.002  000.111  000.111: sourcing /home/douglas/.local/share/nvim/lazy/lazygit.nvim/plugin/lazygit.vim
+009.191  000.026  000.026: sourcing /home/douglas/.local/share/nvim/lazy/nvim-web-devicons/plugin/nvim-web-devicons.vim
+009.900  000.004  000.004: require('vim.F')
+010.585  000.675  000.675: require('nvim-web-devicons.icons-default')
+010.832  001.622  000.942: require('nvim-web-devicons')
+013.983  000.222  000.222: sourcing /home/douglas/.local/share/nvim/lazy/telescope.nvim/plugin/telescope.lua
+014.331  000.034  000.034: require('telescope._extensions')
+014.334  000.332  000.299: require('telescope')
+014.690  000.074  000.074: require('plenary.bit')
+014.730  000.037  000.037: require('plenary.functional')
+014.753  000.205  000.094: require('plenary.path')
+014.763  000.353  000.148: require('plenary.strings')
+014.786  000.022  000.022: require('telescope.deprecated')
+014.951  000.086  000.086: require('plenary.log')
+014.974  000.140  000.054: require('telescope.log')
+015.126  000.031  000.031: require('plenary.compat')
+015.132  000.085  000.054: require('plenary.job')
+015.174  000.041  000.041: require('telescope.state')
+015.186  000.211  000.085: require('telescope.utils')
+015.191  000.404  000.054: require('telescope.sorters')
+016.155  001.820  001.041: require('telescope.config')
+017.197  000.057  000.057: sourcing /home/douglas/.local/share/nvim/lazy/neo-tree.nvim/plugin/neo-tree.vim
+017.616  000.069  000.069: require('neo-tree.log')
+017.629  000.138  000.070: require('neo-tree.utils')
+017.758  000.025  000.025: require('nui.object')
+017.854  000.035  000.035: require('vim.version')
+018.563  000.784  000.749: require('nui.utils')
+018.570  000.811  000.027: require('nui.text')
+018.575  000.878  000.042: require('nui.line')
+018.658  000.045  000.045: require('nui.tree.util')
+018.669  000.093  000.048: require('nui.tree')
+018.714  000.017  000.017: require('nui.utils.buf_storage')
+018.743  000.028  000.028: require('nui.utils.autocmd')
+018.762  000.018  000.018: require('nui.utils.keymap')
+018.798  000.019  000.019: require('nui.layout.utils')
+018.800  000.037  000.019: require('nui.split.utils')
+018.805  000.136  000.035: require('nui.split')
+018.892  000.062  000.062: require('nui.popup.border')
+018.916  000.110  000.048: require('nui.popup')
+018.947  000.030  000.030: require('neo-tree.ui.highlights')
+019.001  000.030  000.030: require('nui.input')
+019.002  000.055  000.025: require('neo-tree.ui.popups')
+019.106  000.024  000.024: require('neo-tree.collections')
+019.108  000.061  000.037: require('neo-tree.events.queue')
+019.109  000.106  000.046: require('neo-tree.events')
+019.128  000.017  000.017: require('neo-tree.ui.windows')
+019.138  001.508  000.083: require('neo-tree.ui.renderer')
+019.432  000.082  000.082: require('neo-tree.sources.filesystem.lib.filter_external')
+019.647  000.111  000.111: require('plenary.iterators')
+019.650  000.148  000.037: require('neo-tree.sources.common.file-nesting')
+019.815  000.061  000.061: require('neo-tree.git.utils')
+019.816  000.117  000.057: require('neo-tree.git.status')
+019.871  000.053  000.053: require('neo-tree.git.ignored')
+019.873  000.222  000.051: require('neo-tree.git')
+019.875  000.442  000.073: require('neo-tree.sources.common.file-items')
+019.941  000.064  000.064: require('neo-tree.sources.filesystem.lib.fs_watch')
+020.216  000.037  000.037: require('plenary.tbl')
+020.219  000.117  000.080: require('plenary.vararg.rotate')
+020.221  000.176  000.058: require('plenary.vararg')
+020.262  000.040  000.040: require('plenary.errors')
+020.270  000.281  000.065: require('plenary.async.async')
+020.602  000.169  000.169: require('plenary.async.structs')
+020.621  000.233  000.064: require('plenary.async.control')
+020.655  000.316  000.084: require('plenary.async.util')
+020.663  000.391  000.075: require('plenary.async.tests')
+020.665  000.724  000.051: require('plenary.async')
+020.687  001.416  000.104: require('neo-tree.sources.filesystem.lib.fs_scan')
+020.879  000.191  000.191: require('neo-tree.ui.inputs')
+020.918  001.779  000.172: require('neo-tree.sources.manager')
+021.368  000.164  000.164: require('neo-tree.defaults')
+021.406  000.036  000.036: require('neo-tree.setup.mapping-helper')
+021.484  000.025  000.025: require('neo-tree.command.parser')
+021.525  000.040  000.040: require('neo-tree.command.completion')
+021.528  000.093  000.028: require('neo-tree.command')
+021.529  000.122  000.029: require('neo-tree.setup.netrw')
+021.532  000.613  000.290: require('neo-tree.setup')
+021.539  004.327  000.288: require('neo-tree')
+021.914  000.036  000.036: require('neo-tree.setup.deprecations')
+023.595  000.027  000.027: require('neo-tree.sources.filesystem.lib.globtopattern')
+023.600  000.081  000.055: require('neo-tree.sources.filesystem')
+023.651  000.020  000.020: require('neo-tree.sources.buffers.lib.items')
+023.654  000.050  000.031: require('neo-tree.sources.buffers')
+023.696  000.017  000.017: require('neo-tree.sources.git_status.lib.items')
+023.698  000.042  000.025: require('neo-tree.sources.git_status')
+023.952  000.023  000.023: require('neo-tree.sources.common.container')
+023.956  000.054  000.031: require('neo-tree.sources.common.components')
+023.974  000.121  000.066: require('neo-tree.sources.git_status.components')
+024.197  000.124  000.124: require('plenary.scandir')
+024.214  000.016  000.016: require('plenary')
+024.218  000.189  000.049: require('neo-tree.sources.filesystem.lib.fs_actions')
+024.237  000.018  000.018: require('neo-tree.sources.common.help')
+024.265  000.027  000.027: require('neo-tree.sources.common.preview')
+024.271  000.278  000.043: require('neo-tree.sources.common.commands')
+024.288  000.312  000.035: require('neo-tree.sources.git_status.commands')
+024.470  000.069  000.069: require('neo-tree.sources.filesystem.components')
+024.663  000.164  000.164: require('neo-tree.sources.filesystem.lib.filter')
+024.701  000.229  000.065: require('neo-tree.sources.filesystem.commands')
+024.837  000.047  000.047: require('neo-tree.sources.buffers.components')
+024.861  000.023  000.023: require('neo-tree.sources.buffers.commands')
+028.674  000.301  000.301: require('auto-save.config')
+028.767  000.036  000.036: require('auto-save.utils.data')
+028.808  000.039  000.039: require('auto-save.utils.colors')
+028.840  000.031  000.031: require('auto-save.utils.echo')
+028.850  000.168  000.062: require('auto-save')
+028.865  000.537  000.068: sourcing /home/douglas/.local/share/nvim/lazy/auto-save.nvim/plugin/auto-save.lua
+028.996  000.034  000.034: sourcing /snap/nvim/3186/usr/share/nvim/runtime/plugin/editorconfig.lua
+029.131  000.114  000.114: sourcing /snap/nvim/3186/usr/share/nvim/runtime/plugin/gzip.vim
+029.186  000.042  000.042: sourcing /snap/nvim/3186/usr/share/nvim/runtime/plugin/man.lua
+029.487  000.161  000.161: sourcing /snap/nvim/3186/usr/share/nvim/runtime/pack/dist/opt/matchit/plugin/matchit.vim
+029.497  000.298  000.137: sourcing /snap/nvim/3186/usr/share/nvim/runtime/plugin/matchit.vim
+029.613  000.100  000.100: sourcing /snap/nvim/3186/usr/share/nvim/runtime/plugin/matchparen.vim
+029.820  000.194  000.194: sourcing /snap/nvim/3186/usr/share/nvim/runtime/plugin/netrwPlugin.vim
+029.881  000.044  000.044: sourcing /snap/nvim/3186/usr/share/nvim/runtime/plugin/osc52.lua
+030.031  000.104  000.104: sourcing /snap/nvim/3186/usr/share/nvim/runtime/plugin/rplugin.vim
+030.097  000.040  000.040: sourcing /snap/nvim/3186/usr/share/nvim/runtime/plugin/shada.vim
+030.124  000.010  000.010: sourcing /snap/nvim/3186/usr/share/nvim/runtime/plugin/spellfile.vim
+030.196  000.056  000.056: sourcing /snap/nvim/3186/usr/share/nvim/runtime/plugin/tarPlugin.vim
+030.248  000.037  000.037: sourcing /snap/nvim/3186/usr/share/nvim/runtime/plugin/tohtml.lua
+030.272  000.010  000.010: sourcing /snap/nvim/3186/usr/share/nvim/runtime/plugin/tutor.vim
+030.369  000.082  000.082: sourcing /snap/nvim/3186/usr/share/nvim/runtime/plugin/zipPlugin.vim
+030.512  026.339  012.282: sourcing /home/douglas/.config/nvim/init.lua
+030.516  000.735: sourcing vimrc file(s)
+030.667  000.037  000.037: sourcing /snap/nvim/3186/usr/share/nvim/runtime/filetype.lua
+030.776  000.044  000.044: sourcing /snap/nvim/3186/usr/share/nvim/runtime/syntax/synload.vim
+030.829  000.137  000.094: sourcing /snap/nvim/3186/usr/share/nvim/runtime/syntax/syntax.vim
+030.836  000.146: inits 3
+031.824  000.988: reading ShaDa
+031.969  000.145: opening buffers
+032.006  000.037: BufEnter autocommands
+032.008  000.002: editing files in windows
+032.079  000.071: VimEnter autocommands
+032.101  000.022: UIEnter autocommands
+032.102  000.001: before starting main loop
+032.285  000.184: first screen update
+032.286  000.001: --- NVIM STARTED ---
+

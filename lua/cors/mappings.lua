@@ -39,7 +39,9 @@ function M.keybindings()
     keys("n", "<leader>o", ":Neotree focus<CR>") -- focus on neo tree if open
     -- Telescope - project searching
     keys("n", "<leader>f", ":Telescope find_files<CR>") -- find files inside current directory
-    keys("n", "<leader>g", ":Telescope live_grep<CR>") -- find words or phrases inside files in current directory
+    keys("n", "<leader>d", ":Telescope live_grep<CR>") -- find words or phrases inside files in current directory
+    -- LazyGit
+    keys("n", "<leader>g", ":LazyGit<CR>")
 
 end
 

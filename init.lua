@@ -119,6 +119,12 @@ require("lazy").setup({
             })
         end,
     },
+    {
+        "kdheepak/lazygit.nvim",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+        },
+    },
 })
 
 -- keybindings for plugins
