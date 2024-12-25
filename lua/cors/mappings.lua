@@ -34,8 +34,12 @@ function M.keybindings()
     -- set leader key
     vim.g.mapleader = ' ' -- set space as leader key
 
-    keys("n", "<leader>e", ":Neotree toggle<CR>")
-    keys("n", "<leader>o", ":Neotree focus<CR>")
+    -- neo tree - File Explorer
+    keys("n", "<leader>e", ":Neotree toggle<CR>") -- toggles neo tree open or close
+    keys("n", "<leader>o", ":Neotree focus<CR>") -- focus on neo tree if open
+    -- Telescope - project searching
+    keys("n", "<leader>f", ":Telescope find_files<CR>") -- find files inside current directory
+    keys("n", "<leader>g", ":Telescope live_grep<CR>") -- find words or phrases inside files in current directory
 
 end
 

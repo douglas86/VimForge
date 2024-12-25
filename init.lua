@@ -17,13 +17,20 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
---      ●       
-
 -- Load plugins
 require("lazy").setup({
 	-- Example plugins
 	{ "nvim-lua/plenary.nvim" },
-	{ "nvim-telescope/telescope.nvim" },
+	{ 
+        "nvim-telescope/telescope.nvim",
+        config = function()
+            require("telescope").setup({
+                defaults = {
+                    file_ignore_patterns = { "%.png$", "%.jpg$", "%.jpeg$", "%.gifs", "%.bmp$", "%.svg$", "%.webp" },
+                },
+            })
+        end,
+    },
 	-- Auto Saving
 	{ 
 		"pocco81/auto-save.nvim",
