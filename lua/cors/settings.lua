@@ -9,3 +9,6 @@ opt.tabstop = 4 -- A tab character is displayed as 4 spaces
 opt.shiftwidth = 4 -- Indentation uses 4 spaces
 opt.expandtab = true -- Conver tabs to spaces
 
+-- center the cursor dynamically
+vim.o.scrolloff = 10
+vim.o.wrap = false
