@@ -1,8 +1,6 @@
 -- Load core files
 require('cors.mappings').setup()
 require('cors.settings')
-require('cors.autocommands')
-
 
 -- auto start coq plugin on vim start
 vim.g.coq_settings = { auto_start = true }
@@ -21,17 +19,35 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-
 -- Load plugins
 require("lazy").setup({
 	-- Example plugins
 	{ "nvim-lua/plenary.nvim" },
+    {
+        "nvim-treesitter/nvim-treesitter",
+        build = ":TSUpdate",
+        event = { "BufRead", "BufNewFile" },
+        config = function()
+            require("nvim-treesitter.configs").setup({
+                modules = {}, -- Added an empty table to satisfy the Lua Language Server
+                ensure_installed = { "lua", "javascript", "typescript", "python" },
+                sync_install = false, -- Install parsers synchronously
+                auto_install = true, -- Automatically install missing installing
+                ignore_install = {},
+                highlight = { enable = true }, -- Enable syntax highlighting
+                indent = { enable = true }, -- Enable Tree-Sitter-based indentation
+            })
+        end,
+    },
 	{
         "nvim-telescope/telescope.nvim",
         dependencies = { 'nvim-lua/plenary.nvim' },
         event = 'BufWinEnter',
         config = function()
             require("telescope").setup({
+                ensure_installed = { "lua", "javascript", "typescript", "python" },
+                highlight = { enable = true },
+                indent = { enable = true }, -- Enable Tree-Sitter-based indentation
                 defaults = {
                     file_ignore_patterns = { "%.png$", "%.jpg$", "%.jpeg$", "%.gifs", "%.bmp$", "%.svg$", "%.webp" },
                 },
@@ -91,7 +107,6 @@ require("lazy").setup({
                             ".DS_Store",
                         },
                     },
-
                 },
                 git_status = {
                     window = {
@@ -167,10 +182,6 @@ require("lazy").setup({
             vim.fn.sign_define('DiagnosticSignInfo', {text="", texthl='DiagnosticSignInfo'})
             vim.fn.sign_define('DiagnosticSignHint', {text="", texthl='DiagnosticSignHint'})
 
-            -- diagnostic keymaps
-            vim.api.nvim_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', {noremap=true, silent=true})
-            vim.api.nvim_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', {noremap=true, silent=true})
-
             require("lspconfig").lua_ls.setup({
                 capabilities = require("coq").lsp_ensure_capabilities(),
                 cmd = {"lua-language-server"},
@@ -198,14 +209,26 @@ require("lazy").setup({
     {
         "folke/neodev.nvim",
         config = function ()
-            require("neodev") .setup()
+            require("neodev").setup()
         end,
     },
     -- autopairs
     {
         "windwp/nvim-autopairs",
+        dependencies = { "nvim-treesitter/nvim-treesitter"},
+        event = "InsertEnter", -- Load only when entering Insert mode
         config = function()
-            require("nvim-autopairs").setup({})
+            local Rule = require("nvim-autopairs.rule")
+
+            require("nvim-autopairs").setup({
+                check_ts = true, -- Enable Tree-sitter integration for better context awareness
+                map_cr = true, -- Map <CR> to correctly handle pairs
+                fast_wrap = {},
+            })
+
+            require("nvim-autopairs").add_rules({
+                Rule("[", "]")
+            })
         end,
     },
     -- statusline - lualine
@@ -242,3 +265,5 @@ require("lazy").setup({
 
 -- keybindings for plugins
 require("cors.mappings").keybindings()
+-- auto commands
+require('cors.autocommands')

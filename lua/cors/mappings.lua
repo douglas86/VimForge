@@ -1,7 +1,6 @@
 local M = {}
 
 function M.setup()
-	
 	local function map(mode, lhs, rhs, opts)
 		local options = { noremap = true, silent = true }
 
@@ -20,7 +19,6 @@ function M.setup()
 end
 
 function M.keybindings()
-
     local function keys(mode, lhs, rhs, opts)
         local options = { silent = true, noremap = true }
 
@@ -34,6 +32,7 @@ function M.keybindings()
     -- set leader key
     vim.g.mapleader = ' ' -- set space as leader key
 
+    -- normal mode keymaps
     -- neo tree - File Explorer
     keys("n", "<leader>e", ":Neotree toggle<CR>") -- toggles neo tree open or close
     keys("n", "<leader>o", ":Neotree focus<CR>") -- focus on neo tree if open
@@ -42,6 +41,12 @@ function M.keybindings()
     keys("n", "<leader>d", ":Telescope live_grep<CR>") -- find words or phrases inside files in current directory
     -- LazyGit
     keys("n", "<leader>g", ":LazyGit<CR>")
+    -- diagnostic keymaps
+    vim.api.nvim_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', {noremap=true, silent=true})
+    vim.api.nvim_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', {noremap=true, silent=true})
+
+    -- insert mode keymaps
+    vim.api.nvim_set_keymap("i", "<CR>", [[v:lua.require('nvim-autopairs').autopairs_cr()]], { noremap = true, expr = true, silent = true, })
 
 end
 

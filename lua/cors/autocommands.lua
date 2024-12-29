@@ -15,3 +15,11 @@ api.nvim_create_autocmd("FileType", {
         opt.expendtab = true
     end,
 })
+
+-- Update autoindent key
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "*",
+    callback = function ()
+        vim.bo.indentkeys = "0{,0},0],:,0#,!^F,o,o,e,0=end,0=until"
+    end,
+})
