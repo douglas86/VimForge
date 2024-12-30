@@ -238,8 +238,17 @@ require("lazy").setup({
 
             -- Diagnostics settings (optional)
             vim.diagnostic.config({
-                virtual_text = true,
+                virtual_text = {
+                	prefix = '●', -- Symbol to use before the diagnostic message
+                    spacing = 4, -- Space between the diagnostic and the line
+                    severity = { min = vim.diagnostic.severity.WARN }, -- Show for warnings and above
+                },
+                float = {
+                    source = true, -- Show source in the floating window
+                    border = 'rounded',
+                },
                 signs = true,
+                underline = true,
                 update_in_insert = false,
             })
 

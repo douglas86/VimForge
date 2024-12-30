@@ -68,3 +68,17 @@ api.nvim_create_autocmd({ "BufWinLeave" }, {
         end
     end,
 })
+
+api.nvim_create_autocmd("CursorMoved", {
+    pattern = "*",
+    callback = function()
+        local current_pos = vim.api.nvim_win_get_cursor(0) -- Get the current cursor position
+        local line = current_pos[1] - 1 -- Convert 1-based line number to 0-based
+        local diagnostic = vim.diagnostic.get(0, { lnum = line }) -- Get diagnostics for the current line
+
+        -- Show diagnostics if they exist
+        if #diagnostic > 0 then
+            vim.diagnostic.open_float(nil, { focus = false, scope = "line" })
+        end
+    end,
+})
