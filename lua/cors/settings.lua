@@ -15,3 +15,10 @@ opt.softtabstop = 4
 -- center the cursor dynamically
 vim.o.scrolloff = 10
 vim.o.wrap = false
+
+-- Enable Treesitter folding
+opt.foldmethod = 'indent'
+opt.foldexpr = 'nvim_treesitter#foldexpr()'
+opt.foldlevel = 99
+opt.foldenable = true
+opt.shada = "'100,f1"

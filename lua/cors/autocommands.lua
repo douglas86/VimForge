@@ -1,6 +1,6 @@
 -- local variables for file
 local api = vim.api
-local opt = vim.opt_local
+-- local opt = vim.opt
 
 -- autocommand group for filetype-specific settings
 api.nvim_create_augroup("MyFileTypeSettings", { clear = true })
@@ -10,9 +10,9 @@ api.nvim_create_autocmd("FileType", {
     group = "MyFileTypeSettings",
     pattern = "javascript,javascriptreact,typescript,typescriptreact",
     callback = function()
-        opt.tabstop = 2
-        opt.shiftwidth = 2
-        opt.expendtab = true
+        vim.bo.tabstop = 2
+        vim.bo.shiftwidth = 2
+        vim.bo.expandtab = true
     end,
 })
 
@@ -22,4 +22,15 @@ vim.api.nvim_create_autocmd("FileType", {
     callback = function ()
         vim.bo.indentkeys = "0{,0},0],:,0#,!^F,o,o,e,0=end,0=until"
     end,
+})
+
+-- Save fold on buffer leave
+api.nvim_create_autocmd({ "BufWinLeave" }, {
+	pattern = "*",
+	command = "mkview",
+})
+-- Restore fold on buffer enter
+api.nvim_create_autocmd({ "BufWinEnter" }, {
+	pattern = "*",
+	command = "silent! loadview",
 })

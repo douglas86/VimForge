@@ -48,6 +48,10 @@ function M.keybindings()
     -- insert mode keymaps
     vim.api.nvim_set_keymap("i", "<CR>", [[v:lua.require('nvim-autopairs').autopairs_cr()]], { noremap = true, expr = true, silent = true, })
 
+    -- Folding of function and classes
+    vim.api.nvim_set_keymap('n', 'zR', ':lua vim.cmd("set foldlevel=99")<CR>', { noremap = true, silent = true })
+    vim.api.nvim_set_keymap('n', 'zM', ':lua vim.cmd("set foldlevel=0")<CR>', { noremap = true, silent = true })
+
 end
 
 return M

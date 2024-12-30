@@ -36,6 +36,8 @@ require("lazy").setup({
                 ignore_install = {},
                 highlight = { enable = true }, -- Enable syntax highlighting
                 indent = { enable = true }, -- Enable Tree-Sitter-based indentation
+                incremental_selection = { enable = true },
+				fold = { enable = true }
             })
         end,
     },
