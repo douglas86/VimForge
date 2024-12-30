@@ -150,6 +150,71 @@ require("lazy").setup({
             "nvim-lua/plenary.nvim",
         },
     },
+    {
+        "lewis6991/gitsigns.nvim",
+        config = function()
+            require("gitsigns").setup({
+                signs = {
+                    add = { text = '|' },
+                    change = { text = '|' },
+                    delete = { text = '_' },
+                    topdelete = { text = '_' },
+                    changedelete = { text = '~' },
+                },
+                signcolumn = true,
+                numhl = false,
+                linehl = false,
+                word_diff = false,
+                current_line_blame = true,
+                current_line_blame_opts = {
+                    virt_text = true,
+                    virt_text_pos = 'eol',
+                    delay = 100,
+                    ignore_whitespace = false,
+                },
+                current_line_blame_formatter = '<author>, <author_time:%Y-%m-%d> - <summary>',
+                on_attach = function(bufnr)
+                    local gs = package.loaded.gitsigns
+
+                    -- Navigation keybindings
+                    vim.keymap.set('n', '[c', function()
+                        if vim.wo.diff then return ']c' end
+                        vim.schedule(function() gs.next_hunk() end)
+                        return '<Ignore>'
+                    end, { expr = true, buffer = bufnr })
+
+                    vim.keymap.set('n', '[c', function()
+                        if vim.wo.diff then return '[c' end
+                        vim.schedule(function() gs.prev_hunk() end)
+                        return '<Ignore>'
+                    end, { expr = true, buffer = bufnr })
+
+                    -- Actions keybindings
+                    local key = vim.keymap.set
+
+                    key('n', '<leader>hs', gs.stage_hunk, { buffer = bufnr })
+                    key('n', '<leader>hr', gs.reset_hunk, { buffer = bufnr })
+
+                    key('v', '<leader>hs', function() gs.stage_hunk { vim.fn.line('.'), vim.fn.line('v')} end, { buffer = bufnr })
+                    key('v', '<leader>hr', function() gs.reset_hunk { vim.fn.line('.'), vim.fn.line('v')} end, { buffer = bufnr })
+
+                    key('n', '<leader>hS', gs.stage_buffer, { buffer = bufnr })
+                    key('n', '<leader>hu', gs.undo_stage_hunk, { buffer = bufnr })
+                    key('n', '<leader>hR', gs.reset_buffer, { buffer = bufnr })
+                    key('n', '<leader>hp', gs.preview_hunk, { buffer = bufnr })
+
+                    key('n', '<leader>hb', function() gs.blame_line { full = true } end, { buffer = bufnr })
+                    key('n', '<leader>tb', gs.toggle_current_line_blame, { buffer = bufnr })
+                    key('n', '<leader>hd', gs.diffthis, { buffer = bufnr })
+                    key('n', '<leader>hD', function() gs.diffthis('~') end, { buffer = bufnr })
+                    key('n', '<leader>td', gs.toggle_deleted, { buffer = bufnr })
+
+                    -- Text object keybindings
+                    key({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>', { buffer = bufnr })
+                end
+            })
+        end
+    },
     -- completion engine
     {
         "ms-jpq/coq_nvim",
