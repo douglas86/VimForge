@@ -54,6 +54,15 @@ function M.keybindings()
 
     -- Load all shortcuts
     vim.api.nvim_set_keymap('n', 't', ':Telescope keymaps<CR>', { noremap = true, silent = true, desc = "find all shortcut keys" })
+
+    -- note taking shortcuts
+    keys("n", "zn", ":Telekasten new_note<CR>", { desc = "New Note" })
+    keys("n", "zf", ":Telekasten find_notes<CR>", { desc = "Find Notes" })
+    keys("n", "zg", ":Telekasten search_notes<CR>", { desc = "Search Notes" })
+    keys("n", "zd", ":Telekasten goto_today<CR>", { desc = "Daily Notes" })
+    keys("n", "zw", ":Telekasten goto_thisweek<CR>", { desc = "Weekly Notes" })
+    keys("n", "zi", ":Telekasten insert_link<CR>", { desc = "Insert Link" })
+    keys("n", "zp", ":Telekasten panel<CR>", { desc = "Note taking panel" })
 end
 
 return M

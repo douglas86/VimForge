@@ -69,6 +69,7 @@ api.nvim_create_autocmd({ "BufWinLeave" }, {
     end,
 })
 
+-- Show diagnostic window as a popup
 api.nvim_create_autocmd("CursorMoved", {
     pattern = "*",
     callback = function()

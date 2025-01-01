@@ -336,7 +336,23 @@ require("lazy").setup({
                 },
             })
         end
-    }
+    },
+    -- note taking
+    {
+        "renerocksai/telekasten.nvim",
+        dependencies = { "nvim-telescope/telescope.nvim" },
+        config = function()
+            require("telekasten").setup({
+                -- Customize the cofiguration here
+                home = vim.fn.expand("~/.config/nvim/notes"),
+                dailies = "daily",
+                weeklies = "weekly",
+                templates = "~/.config/nvim/notes/templates",
+                image_subdir = "images",
+                extension = ".md",
+            })
+        end,
+    },
 })
 
 -- keybindings for plugins
