@@ -327,7 +327,7 @@ require("lazy").setup({
                             sections = {'error', 'warn', 'info', 'hint'},
                             symbols = {error = " ", warn = " ", info = " ", hint = " "},
                             colored = true,
-                            update_in_insert = false,
+                            update_in_insert = true,
                         },
                     },
                     lualine_x = {'encoding',{'fileformat', icons_enabled = true}, 'filetype'},
