@@ -13,8 +13,8 @@ function M.setup()
 	-- set leader key
 	vim.g.mapleader = ' ' -- Set space as leader key
 
-	map('n', '<leader>q', ':q<CR>', { noremap = true, silent = true })
-	map('n', '<leader>w', ':qall<CR>', { noremap = true, silent = true })
+	map('n', 'q', ':q<CR>', { noremap = true, silent = true, desc="Quit current file" })
+	map('n', 'Q', ':qall<CR>', { noremap = true, silent = true, desc="Quit all files" })
 
 end
 
@@ -34,24 +34,26 @@ function M.keybindings()
 
     -- normal mode keymaps
     -- neo tree - File Explorer
-    keys("n", "<leader>e", ":Neotree toggle<CR>") -- toggles neo tree open or close
-    keys("n", "<leader>o", ":Neotree focus<CR>") -- focus on neo tree if open
+    keys("n", "<leader>e", ":Neotree toggle<CR>", { desc = "Toggle Neotree"}) -- toggles neo tree open or close
+    keys("n", "<leader>o", ":Neotree focus<CR>", { desc = "Focus on Neotree" }) -- focus on neo tree if open
     -- Telescope - project searching
-    keys("n", "<leader>f", ":Telescope find_files<CR>") -- find files inside current directory
-    keys("n", "<leader>d", ":Telescope live_grep<CR>") -- find words or phrases inside files in current directory
+    keys("n", "<leader>f", ":Telescope find_files<CR>", { desc = "Search for files with current project" }) -- find files inside current directory
+    keys("n", "<leader>d", ":Telescope live_grep<CR>", { desc = "Search within files of current project" }) -- find words or phrases inside files in current directory
     -- LazyGit
-    keys("n", "<leader>g", ":LazyGit<CR>")
+    keys("n", "<leader>g", ":LazyGit<CR>", { desc = "Open LazyGit" })
     -- diagnostic keymaps
-    vim.api.nvim_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', {noremap=true, silent=true})
-    vim.api.nvim_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', {noremap=true, silent=true})
+    vim.api.nvim_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', { noremap=true, silent=true, desc="jump to previous diagnostic step" })
+    vim.api.nvim_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', { noremap=true, silent=true, desc="jump to next diagnostic step" })
 
     -- insert mode keymaps
-    vim.api.nvim_set_keymap("i", "<CR>", [[v:lua.require('nvim-autopairs').autopairs_cr()]], { noremap = true, expr = true, silent = true, })
+    vim.api.nvim_set_keymap("i", "<CR>", [[v:lua.require('nvim-autopairs').autopairs_cr()]], { noremap = true, expr = true, silent = true, desc="indent when enter pressed inside of brackets" })
 
     -- Folding of function and classes
-    vim.api.nvim_set_keymap('n', 'zR', ':lua vim.cmd("set foldlevel=99")<CR>', { noremap = true, silent = true })
-    vim.api.nvim_set_keymap('n', 'zM', ':lua vim.cmd("set foldlevel=0")<CR>', { noremap = true, silent = true })
+    vim.api.nvim_set_keymap('n', 'zR', ':lua vim.cmd("set foldlevel=99")<CR>', { noremap = true, silent = true, desc="un fold all functions and classes in current file" })
+    vim.api.nvim_set_keymap('n', 'zM', ':lua vim.cmd("set foldlevel=0")<CR>', { noremap = true, silent = true, desc="fold all functions and classes in current file" })
 
+    -- Load all shortcuts
+    vim.api.nvim_set_keymap('n', 't', ':Telescope keymaps<CR>', { noremap = true, silent = true, desc = "find all shortcut keys" })
 end
 
 return M
