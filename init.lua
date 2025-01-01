@@ -350,6 +350,7 @@ require("lazy").setup({
                 templates = vim.fn.expand("~/.config/nvim/notes/templates"),
                 image_subdir = vim.fn.expand("~/.config/nvim/notes/images"),
                 extension = ".md",
+                template_new_daily = vim.fn.expand("~/.config/nvim/notes/templates/daily.md"),
             })
         end,
     },
