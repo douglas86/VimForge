@@ -344,11 +344,11 @@ require("lazy").setup({
         config = function()
             require("telekasten").setup({
                 -- Customize the cofiguration here
-                home = vim.fn.expand("~/.config/nvim/notes"),
-                dailies = "daily",
-                weeklies = "weekly",
-                templates = "~/.config/nvim/notes/templates",
-                image_subdir = "images",
+                home = vim.fn.expand("~/.config/nvim/notes/main"),
+                dailies = vim.fn.expand("~/.config/nvim/notes/daily"),
+                weeklies = vim.fn.expand("~/.config/nvim/notes/weekly"),
+                templates = vim.fn.expand("~/.config/nvim/notes/templates"),
+                image_subdir = vim.fn.expand("~/.config/nvim/notes/images"),
                 extension = ".md",
             })
         end,
