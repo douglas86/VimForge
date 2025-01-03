@@ -359,6 +359,7 @@ require("lazy").setup({
                 pattern = "telekasten",
                 callback = function()
                     vim.defer_fn(function()
+                        vim.cmd("set filetype=markdown")
                         vim.cmd("syntax enable")
                         vim.cmd("set conceallevel=2")
 
@@ -379,6 +380,15 @@ require("lazy").setup({
                 end,
             })
 
+        end,
+    },
+    {
+        "gaoDean/autolist.nvim",
+        ft = {
+            "markdown"
+        },
+        config = function()
+            require("autolist").setup()
         end,
     },
 })
