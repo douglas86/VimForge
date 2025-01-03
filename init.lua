@@ -363,8 +363,9 @@ require("lazy").setup({
                         vim.cmd("set conceallevel=2")
 
                         -- Check for simple list items (- Task)
-                        vim.cmd([[syntax match MarkdownList /\v-\s/ conceal cchar=•]])
-                        vim.api.nvim_set_hl(0, "MarkdownList", { fg = "#ffffff", bold = true })
+                        vim.cmd([[syntax match MarkdownList /\v-\s/ conceal cchar=►]])
+                        vim.api.nvim_set_hl(0, "MarkdownList", { fg = "#00FFFF", bold = true, default = false })
+                        vim.api.nvim_set_hl(0, "Conceal", { fg = "#00FFFF", bold = true })
 
                         -- Check for checked checkboxes (- [x])
                         vim.cmd([[syntax match MarkdownCheckboxChecked /\v-\s\[x\]/ conceal cchar=✅]])
