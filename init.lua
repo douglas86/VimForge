@@ -363,22 +363,16 @@ require("lazy").setup({
                         vim.cmd("set conceallevel=2")
 
                         -- Check for simple list items (- Task)
-                        if vim.fn.search("\\v-\\s", "n") ~= 0 then
-                            vim.cmd([[syntax match MarkdownList /\v-\s/ conceal cchar=•]])
-                            vim.api.nvim_set_hl(0, "MarkdownList", { fg = "#ffffff", bold = true })
-                        end
+                        vim.cmd([[syntax match MarkdownList /\v-\s/ conceal cchar=•]])
+                        vim.api.nvim_set_hl(0, "MarkdownList", { fg = "#ffffff", bold = true })
 
                         -- Check for checked checkboxes (- [x])
-                        if vim.fn.search("\\v-\\s\\[x\\]", "n") ~= 0 then
-                            vim.cmd([[syntax match MarkdownCheckboxChecked /\v-\s\[x\]/ conceal cchar=✅]])
-                            vim.api.nvim_set_hl(0, "MarkdownCheckboxChecked", { fg = "#00ff00", bold = true })
-                        end
+                        vim.cmd([[syntax match MarkdownCheckboxChecked /\v-\s\[x\]/ conceal cchar=✅]])
+                        vim.api.nvim_set_hl(0, "MarkdownCheckboxChecked", { fg = "#00ff00", bold = true })
 
                         -- Check for unchecked checkboxes (- [ ])
-                        if vim.fn.search("\\v-\\s\\[ \\]", "n") ~= 0 then
-                            vim.cmd([[syntax match MarkdownCheckboxUnchecked /\v-\s\[ \]/ conceal cchar=❌]])
-                            vim.api.nvim_set_hl(0, "MarkdownCheckboxUnchecked", { fg = "#ffffff", bg = "#ff4d4d", bold = true })
-                        end
+                        vim.cmd([[syntax match MarkdownCheckboxUnchecked /\v-\s\[ \]/ conceal cchar=❌]])
+                        vim.api.nvim_set_hl(0, "MarkdownCheckboxUnchecked", { fg = "#ffffff", bold = true })
 
                     end, 50) -- Delay by 50ms
                 end,
