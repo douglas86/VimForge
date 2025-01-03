@@ -2,6 +2,7 @@
 require('cors.mappings').setup()
 require('cors.settings')
 
+
 -- auto start coq plugin on vim start
 vim.g.coq_settings = { auto_start = true }
 
@@ -351,10 +352,33 @@ require("lazy").setup({
                 image_subdir = vim.fn.expand("~/.config/nvim/notes/images"),
                 extension = ".md",
                 template_new_daily = vim.fn.expand("~/.config/nvim/notes/templates/daily.md"),
+                filetype = "markdown"
             })
+
+            vim.api.nvim_create_autocmd("FileType", {
+                pattern = "telekasten",
+                callback = function()
+                    vim.defer_fn(function()
+                        vim.cmd("syntax enable")
+                        vim.cmd("set conceallevel=2")
+                        -- vim.cmd([[syntax match MarkdownCheckboxUnchecked /\v-\s\[ \]/ conceal cchar=☐]])
+                        -- vim.cmd([[syntax match MarkdownCheckboxChecked /\v-\s\[x\]/ conceal cchar=✔]])
+
+                        -- Define the syntax match for unchecked checkboxes
+                        vim.cmd([[syntax match MarkdownCheckboxUnchecked /\v-\s\[ \]/ conceal cchar=❌]])
+                        vim.api.nvim_set_hl(0, "MarkdownCheckboxUnchecked", { fg = "#ffffff", bg = "#ff4d4d", bold = true })
+
+                        -- Define the syntax match for checked checkboxes
+                        vim.cmd([[syntax match MarkdownCheckboxChecked /\v-\s\[x\]/ conceal cchar=✅]])
+                        vim.api.nvim_set_hl(0, "MarkdownCheckboxChecked", { fg = "#00ff00", bold = true })
+                    end, 50) -- Delay by 50ms
+                end,
+            })
+
         end,
     },
 })
+
 
 -- keybindings for plugins
 require("cors.mappings").keybindings()

@@ -62,6 +62,7 @@ function M.keybindings()
     keys("n", "zw", ":Telekasten goto_thisweek<CR>", { desc = "Weekly Notes" })
     keys("n", "zi", ":Telekasten insert_link<CR>", { desc = "Insert Link" })
     keys("n", "zp", ":Telekasten panel<CR>", { desc = "Note taking panel" })
+    keys("n", "zz", ":Telekasten toggle_todo<CR>", { desc = "toggle checkbox in notes" })
 
     keys("n", "zg", function()
         require("telescope.builtin").live_grep({

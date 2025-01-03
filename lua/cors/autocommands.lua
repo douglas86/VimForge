@@ -1,6 +1,5 @@
 -- local variables for file
 local api = vim.api
--- local opt = vim.opt
 
 -- autocommand group for filetype-specific settings
 api.nvim_create_augroup("MyFileTypeSettings", { clear = true })
@@ -40,6 +39,7 @@ api.nvim_create_autocmd({ "BufWinLeave" }, {
         vim.cmd("silent! mkview")
     end,
 })
+
 -- Restore fold on buffer enter
 api.nvim_create_autocmd({ "BufWinEnter" }, {
 	pattern = "*",

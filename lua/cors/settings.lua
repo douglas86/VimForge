@@ -22,3 +22,5 @@ opt.foldexpr = 'nvim_treesitter#foldexpr()'
 opt.foldlevel = 99
 opt.foldenable = true
 opt.shada = "'100,f1"
+
+
