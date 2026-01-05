@@ -82,6 +82,7 @@ require("lazy").setup({
             },
         },
     },
+    -- version control
     {
       "kdheepak/lazygit.nvim",
       cmd = {
@@ -96,9 +97,75 @@ require("lazy").setup({
         "nvim-lua/plenary.nvim",
       },
       keys = {
-        { "<leader>gg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
+        { "<C-g>", "<cmd>LazyGit<cr>", desc = "LazyGit" },
       },
     },
+    {
+        "lewis6991/gitsigns.nvim",
+          event = { "BufReadPre", "BufNewFile" }, -- Load only when a file is opened
+          opts = {
+            signs = {
+              add          = { text = "┃" },
+              change       = { text = "┃" },
+              delete       = { text = "_" },
+              topdelete    = { text = "‾" },
+              changedelete = { text = "~" },
+              untracked    = { text = "┆" },
+            },
+            on_attach = function(bufnr)
+              local gitsigns = require('gitsigns')
+              local function map(mode, l, r, opts)
+                opts = opts or {}
+                opts.buffer = bufnr
+                vim.keymap.set(mode, l, r, opts)
+              end
+              -- Navigation
+              map('n', ']c', function()
+                if vim.wo.diff then return ']c' end
+                vim.schedule(function() gitsigns.nav_hunk('next') end)
+                return '<Ignore>'
+              end, { expr = true, desc = "Next Git hunk" })
+              map('n', '[c', function()
+                if vim.wo.diff then return '[c' end
+                vim.schedule(function() gitsigns.nav_hunk('prev') end)
+                return '<Ignore>'
+              end, { expr = true, desc = "Prev Git hunk" })
+              -- Actions (Preview Hunk)
+              map('n', '<leader>hp', gitsigns.preview_hunk, { desc = "Preview Git hunk" })
+              map('n', '<leader>hb', function() gitsigns.blame_line{full=true} end, { desc = "Git blame line" })
+            end
+          }
+    },
+    {
+    -- 1. Diffview: Project-wide diffs and file history
+      {
+        "sindrets/diffview.nvim",
+        cmd = { "DiffviewOpen", "DiffviewFileHistory" },
+        keys = {
+          { "<leader>gd", "<cmd>DiffviewOpen<cr>", desc = "Diffview Open" },
+          { "<leader>gh", "<cmd>DiffviewFileHistory %<cr>", desc = "File History" },
+        },
+        opts = {},
+      },
+      -- 2. Git-conflict: Smart merge conflict markers
+      {
+        "akinsho/git-conflict.nvim",
+        version = "*",
+        config = function()
+          require("git-conflict").setup({
+            default_mappings = true, -- Sets up co, ct, cb, c0 (see below)
+            disable_diagnostics = true, -- Hides LSP errors during conflicts
+            list_opener = "copen",
+            highlights = {
+                incoming = 'DiffAdd',
+                current = 'DiffText',
+            },
+            debug = false,
+          })
+        end,
+      },
+    },
+    -- auto saving
     {
       "Pocco81/auto-save.nvim",
       config = function()
