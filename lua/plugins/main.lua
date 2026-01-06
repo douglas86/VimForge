@@ -1,5 +1,5 @@
 -- Setup lazy.nvim
-require("lazy").setup({
+return {
     -- 1. Colorscheme
     { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
     -- 3. Syntax Highlighting (Treesitter)
@@ -227,5 +227,5 @@ require("lazy").setup({
                             })
         end,
     },
-})
+}
 
