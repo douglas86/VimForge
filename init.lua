@@ -1,5 +1,4 @@
 -- ~/.config/nvim/init.lua
-vim.g.mapleader = ' '
 
 -- Enable the fast loader first
 if vim.loader then
