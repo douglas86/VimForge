@@ -28,5 +28,14 @@ g.loaded_ruby_provider = 0
 g.loaded_perl_provider = 0
 
 -- keymappings
-key.set('n', '<C-q>', '<cmd>x<cr>', { desc = 'Save and quit current file' })
-key.set('n', '<C-w>', '<cmd>xa<cr>', { desc = 'Save and quit all files' })
+-- File save & quit
+key.set('n', '<leader>w', '<cmd>w<cr>', { desc = 'Save file' })
+key.set('n', '<leader>q', '<cmd>q<cr>', { desc = 'Quit file' })
+key.set('n', '<leader>x', '<cmd>x<cr>', { desc = 'Save and quit file' })
+key.set('n', '<leader>qa', '<cmd>xa<cr>', { desc = 'Save and quit all files' })
+
+-- Quick pane/window navigation
+key.set('n', '<C-h>', '<C-w>h', { desc = 'Move focus to left pane' })
+key.set('n', '<C-j>', '<C-w>j', { desc = 'Move focus to the lower pane' })
+key.set('n', '<C-k>', '<C-w>k', { desc = 'Move focus to the upper pane' })
+key.set('n', '<C-l>', '<C-w>l', { desc = 'Move focus to right pane' })

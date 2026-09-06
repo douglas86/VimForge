@@ -235,9 +235,6 @@ return {
         end,
     },
     -- Todo Comments
-    -- TODO: this is a comment
-    -- NOTE: this is a note
-    -- FIX: This is a fix
     {
     "folke/todo-comments.nvim",
     event = "VeryLazy",
@@ -278,8 +275,26 @@ return {
     { "]t", function() require("todo-comments").jump_next() end, desc = "Next todo comment" },
     { "[t", function() require("todo-comments").jump_prev() end, desc = "Previous todo comment" },
     { "<leader>ft", "<cmd>TodoTelescope<cr>", desc = "Find Todos (Telescope)" },
-    { "<leader>xt", "<cmd>TodoTrouble<cr>", desc = "Todos (Trouble)" },
+    { "<leader>xt", "<cmd>Trouble todo toggle<cr>", desc = "Todos (Trouble)" },
   },
+},
+{
+    "folke/trouble.nvim",
+    cmd = { "Trouble" },
+    opts = {},
+    keys = {
+        {
+            "<leader>xx",
+            "<cmd>Trouble diagnostics toggle<cr>",
+            desc = "Diagnostics (Trouble)",
+        },
+        {
+            "<leader>xt",
+            "<cmd>Trouble todo toggle<cr>",
+            desc = "Todo list (Trouble)",
+        }
+    }
 }
+
 }
 
