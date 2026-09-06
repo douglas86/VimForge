@@ -206,6 +206,12 @@ return {
         },
         config = function()
             local cmp = require('cmp')
+
+            -- load snippets configuratation file
+            require("luasnip.loaders.from_lua").lazy_load({
+                paths = vim.fn.stdpath("config") .. "/lua/snippets",
+            })
+
             cmp.setup({
                 snippet = {
                     expand = function(args)
