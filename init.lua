@@ -27,5 +27,3 @@ require("core.settings")
 require("config.lazy")
 require("core.autocommands")
 require("core.options")
-
-vim.cmd.colorscheme "catppuccin"
