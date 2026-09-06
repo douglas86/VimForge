@@ -1,7 +1,14 @@
 -- Setup lazy.nvim
 return {
     -- 1. Colorscheme
-    { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
+    {
+        "catppuccin/nvim",
+        name = "catppuccin",
+        priority = 1000,
+        config = function ()
+            vim.cmd.colorscheme "catppuccin"
+        end
+    },
     -- 3. Syntax Highlighting (Treesitter)
     { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
     -- 4. Auto Pairs
@@ -227,5 +234,52 @@ return {
                             })
         end,
     },
+    -- Todo Comments
+    -- TODO: this is a comment
+    -- NOTE: this is a note
+    -- FIX: This is a fix
+    {
+    "folke/todo-comments.nvim",
+    event = "VeryLazy",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    opts = {
+     signs = true, -- show icons in the signs column
+     sign_priority = 8,
+     keywords = {
+       FIX = {
+         icon = " ", -- icon used for the sign, and in search results
+         color = "error", -- can be a hex color, or a named color (error, warning, info, hint, default, test)
+         alt = { "FIXME", "BUG", "FIXIT", "ISSUE" },
+       },
+       TODO = { icon = " ", color = "info" },
+       HACK = { icon = " ", color = "warning" },
+       WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX" } },
+       PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
+       NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
+       TEST = { icon = "⏲ ", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
+     },
+     gui_style = {
+       fg = "NONE",
+       bg = "BOLD",
+     },
+     colors = {
+       error = { "DiagnosticError", "ErrorMsg", "#DC2626" },
+       warning = { "DiagnosticWarn", "WarningMsg", "#FBBF24" },
+       info = { "DiagnosticInfo", "#2563EB" },
+       hint = { "DiagnosticHint", "#10B981" },
+       default = { "Identifier", "#7C3AED" },
+       test = { "Identifier", "#FF006E" },
+    },
+    config = function (_, opts)
+        require("todo-comments").setup(opts)
+    end
+  },
+  keys = {
+    { "]t", function() require("todo-comments").jump_next() end, desc = "Next todo comment" },
+    { "[t", function() require("todo-comments").jump_prev() end, desc = "Previous todo comment" },
+    { "<leader>ft", "<cmd>TodoTelescope<cr>", desc = "Find Todos (Telescope)" },
+    { "<leader>xt", "<cmd>TodoTrouble<cr>", desc = "Todos (Trouble)" },
+  },
+}
 }
 
