@@ -9,33 +9,40 @@ return {
         "nvim-lua/plenary.nvim",
         "nvim-treesitter/nvim-treesitter",
     },
-    opts = {
-        adapters = {
-            gemini = function ()
-                return require("codecompanion.adapters").extend("gemini", {
-                    env = {
-                        api_key = "GEMINI_API_KEY",
-                    },
-                    schema = {
-                        model = {
-                            default = "gemini-3.6-flash",
-                        },
-                    },
-                })
-            end,
-        },
-        -- Force chat and inline prompts to use Gemini instead of Copilot
-        strategies = {
-            chat = {
-                adapter = "gemini",
-                model = "gemin-3.6-flash"
+    config = function()
+        require("codecompanion").setup({
+            strategies = {
+                chat = {
+                    adapter = {
+                        name = "gemini",
+                        model = "gemini-3.6-flash",
+                    }
+                },
+                inline = {
+                    adapter = {
+                        name = "gemini",
+                        model = "gemini-3.6-flash",
+                    }
+                },
             },
-            inline = {
-                adapter = "gemini",
-                model = "gemini-3.6-flash"
-            },
-        },
-    },
+            adapters = {
+                gemini = function ()
+                    return require("codecompanion.adapters").extend("gemini", {
+                        schema = {
+                            model = {
+                                default = "gemini-3.6-flash",
+                                choices = {
+                                    "gemini-3.6-flash",
+                                    "gemini-3.5-flash",
+                                    "gemini-3.1-flash-lite",
+                                }
+                            }
+                        }
+                    })
+                end
+            }
+        })
+    end,
     keys = {
         { "<leader>aa", "<cmd>CodeCompanionChat toggle<cr>", desc = "Toggle Gemini Chat" },
         { "<leader>ai", "<cmd>codecompanion<cr>", mode = { "n", "v" }, desc = "Inline Gemini Prompt"},
