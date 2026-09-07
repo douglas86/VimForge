@@ -1,10 +1,5 @@
 -- ~/.config/nvim/init.lua
 
--- NOTE: I have fixed the invalid api key that I was getting
--- -- FIX: I am receiving a 429 error code from gemini for max quota reached
--- -- TODO: Fix issue above and getting gemini to respond with the correct messages
--- -- TODO: change gemini to be a floating window instead of a split
-
 -- Enable the fast loader first
 if vim.loader then
     vim.loader.enable()
