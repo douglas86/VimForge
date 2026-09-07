@@ -11,6 +11,17 @@ return {
     },
     config = function()
         require("codecompanion").setup({
+            display = {
+                chat = {
+                    window = {
+                        layout = "float",
+                        border = "rounded",
+                        height = 0.8,
+                        width = 0.8,
+                        relative = "editor",
+                   },
+                },
+            },
             strategies = {
                 chat = {
                     adapter = {
@@ -30,7 +41,7 @@ return {
                     return require("codecompanion.adapters").extend("gemini", {
                         schema = {
                             model = {
-                                default = "gemini-3.6-flash",
+                                default = "gemini-3.8-flash",
                                 choices = {
                                     "gemini-3.6-flash",
                                     "gemini-3.5-flash",
@@ -40,7 +51,7 @@ return {
                         }
                     })
                 end
-            }
+            },
         })
     end,
     keys = {
