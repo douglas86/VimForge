@@ -1,0 +1,3 @@
+-- environment variables
+.env
+lua/core/secrets.lua
