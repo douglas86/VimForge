@@ -25,5 +25,6 @@ vim.opt.rtp:prepend(lazypath)
 
 require("core.settings")
 require("config.lazy")
+require("config.notifications")
 require("core.autocommands")
 require("core.options")

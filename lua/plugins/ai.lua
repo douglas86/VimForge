@@ -3,6 +3,10 @@ if ok and secrets and secrets.GEMINI_API_KEY then
     vim.env.GEMINI_API_KEY = secrets.GEMINI_API_KEY
 end
 
+-- NOTE: I have been able to get Gemini to respond and use its API key
+-- -- NOTE: Gemini now works as a floating window
+-- -- TODO: The next step is to try and get Gemini into Tutoring mode on every session
+
 return {
     "olimorris/codecompanion.nvim",
     dependencies = {
