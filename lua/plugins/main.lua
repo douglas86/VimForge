@@ -72,14 +72,26 @@ return {
         build = function() vim.fn["mkdp#util#install"]() end,
     },
     {
-        "MeanderingProgrammer/render-markdown.nvim",
-        dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
-        ft = { "markdown" },
-        config = function()
-            require("render-markdown").setup({})
-        end,
+    "MeanderingProgrammer/render-markdown.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
+    ft = { "markdown" },
+    opts = {
+      heading = {
+        enabled = true,
+        sign = false,
+        position = "inline",
+        width = "full",
+        icons = {
+          "🏷️  ", -- H1 (#)
+          "📌 ", -- H2 (##)
+          "📦 ", -- H3 (###)
+          "🔹 ", -- H4 (####)
+          "▫️  ", -- H5 (#####)
+          "🔸 ", -- H6 (######)
+        },
+      },
     },
-    {
+  },{
         "folke/lazydev.nvim",
         ft = 'lua', -- only load on lua files
         opts = {
