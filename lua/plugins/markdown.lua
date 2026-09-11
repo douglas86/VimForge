@@ -13,6 +13,13 @@ return {
             vim.g.mkdp_command_for_global = 1
             vim.g.mkdp_echo_preview_url = 1
 
+            -- Reuse the existing preview tab/page instead of creating a new one
+            vim.g.mkdp_combine_preview = 1
+
+            -- Lock the port and IP so the browser points to the exact same URL every time
+            vim.g.mkdp_port = "8595"
+            vim.g.mkdp_open_to_the_world = 0
+
             -- Automatically opens the browser preview whenever you enter a markdown buffer
             vim.g.mkdp_auto_start = 1
 
