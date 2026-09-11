@@ -46,34 +46,45 @@ auto({ "CursorMoved" }, {
     end,
 })
 
--- Create an autocommand that runs automatically right before saving a markdown buffer
+-- Create a reverse lookup to avoid re-adding if an emoji already exists
+local emoji_lookup = {}
+for _, e in pairs(heading_emojis) do
+  emoji_lookup[e] = true
+end
+
 vim.api.nvim_create_autocmd("BufWritePre", {
-  buffer = 0,
+  pattern = { "*.md", "*.markdown" },
   desc = "Automatically inject emojis into markdown headings before saving",
-  callback = function()
-    local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+  callback = function(args)
+    local lines = vim.api.nvim_buf_get_lines(args.buf, 0, -1, false)
     local changed = false
 
     for i, line in ipairs(lines) do
-      -- Matches any heading line like: "^(##+)%s+(.*)$"
+      -- Matches any heading: starts with 1-6 hashes, followed by spaces, then the rest
       local hashes, rest = line:match("^(#+)%s+(.*)$")
       if hashes and heading_emojis[hashes] then
-        local emoji = heading_emojis[hashes]
+        local expected_emoji = heading_emojis[hashes]
 
-        -- If the heading doesn't already start with an emoji, add it
-        -- (Checks if the first character is not plain ASCII alphanumeric)
-        local first_char = rest:match("^([^%w%s%p])")
-        if not first_char then
-          lines[i] = string.format("%s %s %s", hashes, emoji, rest)
+        -- Check if the line already starts with ANY of our configured emojis
+        local already_has_emoji = false
+        for _, e in pairs(heading_emojis) do
+          if vim.startswith(rest, e) then
+            already_has_emoji = true
+            break
+          end
+        end
+
+        -- If it doesn't have an emoji, inject it
+        if not already_has_emoji then
+          lines[i] = string.format("%s %s %s", hashes, expected_emoji, rest)
           changed = true
         end
       end
     end
 
     if changed then
-      -- Save cursor position to prevent cursor jumping
       local cursor = vim.api.nvim_win_get_cursor(0)
-      vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
+      vim.api.nvim_buf_set_lines(args.buf, 0, -1, false, lines)
       pcall(vim.api.nvim_win_set_cursor, 0, cursor)
     end
   end,
