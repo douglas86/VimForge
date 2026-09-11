@@ -81,7 +81,7 @@ return {
         sign = false,
         position = "inline",
         width = "full",
-        icons = {},
+        icons = { " ", " ", " ", " ", " ", " "},
       },
     },
   },{
