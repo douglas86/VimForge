@@ -131,6 +131,25 @@ return {
             })
         end
     },
+    -- Bulleted lists, checkboxes, numbered lists and handled indentation
+    {
+        "bullets-vim/bullets.vim",
+        ft = { "markdown" },
+        event = "VeryLazy",
+        init = function()
+            -- Enable strictly for markdown
+            vim.g.bullets_enabled_file_types = { "markdown" }
+
+            -- Automatically renumber ordered lists when items are added, deleted or indented
+            vim.g.bullets_renumber_on_change = 1
+
+            --Enable nested/heirarchical checkboxes
+            vim.g.bullets_nested_checkboxes = 1
+
+            -- Style of unordered bullet characters across nested levels
+            vim.g.bullets_outline_levels = { "std-" }
+        end
+    },
     -- Document Outline / TOC Sidebar
     {
         {
