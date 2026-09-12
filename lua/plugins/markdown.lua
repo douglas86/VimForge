@@ -150,6 +150,41 @@ return {
             vim.g.bullets_outline_levels = { "std-" }
         end
     },
+    -- Paste Images from Clipboard
+    {
+        "HakonHarnes/img-clip.nvim",
+        cmd = { "PasteImage" },
+        event = "VeryLazy",
+        keys = {
+            { "<leader>ip", "<cmd>PasteImage<cr>", desc = "Markdown: Paste to Clipboard" }
+        },
+        opts = {
+            default = {
+                -- Subfolder relative to current buffer where images are saved
+                prompt_for_file_name = true,
+                file_name = "%Y-%m-%d-%H-%M-%S",
+                -- Use relative paths so GitHub/GitLab render them cleanly
+                use_absolute_path = false,
+                relative_to_current_file = true,
+            },
+            filetypes = {
+                markdown = {
+                    -- Dynamically target assets/readme if editing a README file,
+                    -- otherwise fall back to Standard assets/
+                    dir_path = function()
+                        local filename = vim.fs.basename(vim.api.nvim_buf_get_name(0)):lower()
+                        if filename:match("^readme") then
+                            return "assets/readme"
+                        end
+                        return "assets"
+                    end,
+                    -- Standard GitHub Markdwon syntax: ![caption](path/to/image.png)
+                    template = "![$CURSOR]($FILE_PATH)",
+                    url_encode_path = true,
+                }
+            }
+        }
+    },
     -- Document Outline / TOC Sidebar
     {
         {

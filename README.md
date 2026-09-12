@@ -37,4 +37,9 @@
 - [X] Task 1
 - [X] Task 2
 
+
+![dashboard](assets/dashboard-overview.png)
+
+![readme-file](assets/readme/2026-09-12-20-19-50.png)
+
 ---
