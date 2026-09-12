@@ -1,6 +1,5 @@
 -- ~/.config/nvim/lua/core/autocommands.lua
 
-
 -- local variables
 local opt = vim.opt
 -- local timer = nil
@@ -52,6 +51,7 @@ for _, e in pairs(heading_emojis) do
     emoji_lookup[e] = true
 end
 
+-- Adds emojis to the front of the headings in markdown files
 vim.api.nvim_create_autocmd("BufWritePre", {
     pattern = { "*.md", "*.markdown" },
     desc = "Automatically inject emojis into markdown headings before saving",

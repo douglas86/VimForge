@@ -21,10 +21,42 @@ return {
             vim.g.mkdp_open_to_the_world = 0
 
             -- Automatically opens the browser preview whenever you enter a markdown buffer
-            vim.g.mkdp_auto_start = 1
+            vim.g.mkdp_auto_start = 0
 
             -- Automatically close the preview tab/window when switching away from the buffer
-            vim.g.mkdp_auto_close = 1
+            vim.g.mkdp_auto_close = 0
+        end,
+        config = function()
+            local readme_group = vim.api.nvim_create_augroup("ReadmeAutoPreview", { clear = true })
+
+            local readme_patterns = {
+                "README.md",
+                "readme.md",
+                "README",
+                "readme",
+                "*.README.md",
+            }
+
+            -- Open preview when entering a README buffer
+            vim.api.nvim_create_autocmd({ "BufEnter" }, {
+                group = readme_group,
+                pattern = readme_patterns,
+                callback = function()
+                    if vim.bo.buftype == "" then
+                        vim.cmd("MarkdownPreview")
+                    end
+                end
+            })
+
+            -- Stop preview only when completely unloading/deleting the README buffer
+            -- (Using BufDelete/BufUnload prevents closing when briefly switching to markdown.lua)
+            vim.api.nvim_create_autocmd({ "BufDelete", "BufUnload" }, {
+                group = readme_group,
+                pattern = readme_patterns,
+                callback = function()
+                    vim.cmd("MarkdownPreviewStop")
+                end,
+            })
         end,
         keys = {
             { "<leader>mp", "<cmd>MarkdownPreviewToggle<cr>", desc = "Markdown: Toggle Preview" },
