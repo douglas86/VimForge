@@ -90,6 +90,44 @@ return {
             },
         },
     },
+    -- Table formatting automatically
+    {
+        "dhruvasagar/vim-table-mode",
+        ft = { "markdown" },
+        cmd = { "TableModeToggle", "TableModeEnable", "TableModeDisable" },
+        init = function()
+            -- Standard Markdown pipe corners
+            vim.g.table_mode_corner = "|"
+
+            -- Automatically enable table mode for markdown files
+            vim.g.table_mode_always_active = 1
+        end,
+        config = function()
+            local table_group = vim.api.nvim_create_augroup("MarkdownTableAutoMode", { clear = true })
+
+            -- Turn on Table Mode when entering Insert mode in Markdown
+            vim.api.nvim_create_autocmd("InsertEnter", {
+                group = table_group,
+                pattern = { "*.md", "*.markdown" },
+                callback = function()
+                    if vim.bo.buftype == "" and vim.fn["tablemode#IsActive"]() == 0 then
+                        vim.cmd("silent! TableModeEnable")
+                    end
+                end
+            })
+
+            -- Turn off Table Mode when returning to Normal mode
+            vim.api.nvim_create_autocmd("InsertLeave", {
+                group = table_group,
+                pattern = { "*.md", "*.markdown" },
+                callback = function()
+                    if vim.bo.buftype == "" and vim.fn["tablemode#IsActive"]() == 1 then
+                        vim.cmd("silent! TableModeDisable")
+                    end
+                end,
+            })
+        end
+    },
     -- Document Outline / TOC Sidebar
     {
         {
