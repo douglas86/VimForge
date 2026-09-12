@@ -34,8 +34,8 @@
     - item 2
     - item 3
 
-- [X] Task 1
-- [X] Task 2
+- [ ] Task 1
+- [ ] Task 2
 
 
 ![dashboard](assets/dashboard-overview.png)
@@ -43,3 +43,10 @@
 ![readme-file](assets/readme/2026-09-12-20-19-50.png)
 
 ---
+
+**This is bold**
+
+_This is italics_
+
+---
+

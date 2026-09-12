@@ -6,7 +6,6 @@ return {
         "iamcco/markdown-preview.nvim",
         cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
         ft = { "markdown" },
-        event = "VeryLazy",
         -- Runs automatically on any machine during :Lazy install / sync
         build = "cd app && npm install",
         init = function()
@@ -81,7 +80,6 @@ return {
         "MeanderingProgrammer/render-markdown.nvim",
         dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
         ft = { "markdown" },
-        event = "VeryLazy",
         opts = {
             heading = {
                 enabled = true,
@@ -97,7 +95,6 @@ return {
         "dhruvasagar/vim-table-mode",
         ft = { "markdown" },
         cmd = { "TableModeToggle", "TableModeEnable", "TableModeDisable" },
-        event = "VeryLazy",
         init = function()
             -- Standard Markdown pipe corners
             vim.g.table_mode_corner = "|"
@@ -135,7 +132,6 @@ return {
     {
         "bullets-vim/bullets.vim",
         ft = { "markdown" },
-        event = "VeryLazy",
         init = function()
             -- Enable strictly for markdown
             vim.g.bullets_enabled_file_types = { "markdown" }
@@ -154,7 +150,6 @@ return {
     {
         "HakonHarnes/img-clip.nvim",
         cmd = { "PasteImage" },
-        event = "VeryLazy",
         keys = {
             { "<leader>ip", "<cmd>PasteImage<cr>", desc = "Markdown: Paste to Clipboard" }
         },
@@ -184,6 +179,14 @@ return {
                 }
             }
         }
+    },
+    -- Visual Mode Link & formatting helpers
+    {
+        "antonk52/markdowny.nvim",
+        ft = { "markdown" },
+        config = function()
+            require("markdowny").setup()
+        end,
     },
     -- Document Outline / TOC Sidebar
     {
