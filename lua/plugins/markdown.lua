@@ -6,6 +6,7 @@ return {
         "iamcco/markdown-preview.nvim",
         cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
         ft = { "markdown" },
+        event = "VeryLazy",
         -- Runs automatically on any machine during :Lazy install / sync
         build = "cd app && npm install",
         init = function()
@@ -80,6 +81,7 @@ return {
         "MeanderingProgrammer/render-markdown.nvim",
         dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
         ft = { "markdown" },
+        event = "VeryLazy",
         opts = {
             heading = {
                 enabled = true,
@@ -95,6 +97,7 @@ return {
         "dhruvasagar/vim-table-mode",
         ft = { "markdown" },
         cmd = { "TableModeToggle", "TableModeEnable", "TableModeDisable" },
+        event = "VeryLazy",
         init = function()
             -- Standard Markdown pipe corners
             vim.g.table_mode_corner = "|"
