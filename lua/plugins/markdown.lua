@@ -41,20 +41,33 @@ return {
             vim.api.nvim_create_autocmd({ "BufEnter" }, {
                 group = readme_group,
                 pattern = readme_patterns,
-                callback = function()
-                    if vim.bo.buftype == "" then
-                        vim.cmd("MarkdownPreview")
+                callback = function(args)
+                    if vim.bo[args.buf].buftype ~= "" then
+                        return
                     end
+
+                    -- Mark the buffer to automatically delete itself once it goes off-screen
+                    vim.bo[args.buf].bufhidden = "delete"
+
+                    -- Start the preview
+                    vim.cmd("MarkdownPreview")
+
+                    -- Attach cleanup to fire as soon as the buffer is unloaded/deleted
+                    vim.api.nvim_create_autocmd({ "BufDelete", "BufUnload" }, {
+                        buffer = args.buf,
+                        once = true,
+                        callback = function()
+                            vim.cmd("MarkdownPreviewStop")
+                        end,
+                    })
                 end
             })
 
-            -- Stop preview only when completely unloading/deleting the README buffer
-            -- (Using BufDelete/BufUnload prevents closing when briefly switching to markdown.lua)
-            vim.api.nvim_create_autocmd({ "BufDelete", "BufUnload" }, {
+            -- Clean up if quitting Neovim directly
+            vim.api.nvim_create_autocmd("VimLeavePre", {
                 group = readme_group,
-                pattern = readme_patterns,
                 callback = function()
-                    vim.cmd("MarkdownPreviewStop")
+                    vim.cmd("silent! MarkdownPreviewStop")
                 end,
             })
         end,
