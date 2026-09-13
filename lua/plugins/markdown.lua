@@ -25,6 +25,9 @@ return {
 
             -- Automatically close the preview tab/window when switching away from the buffer
             vim.g.mkdp_auto_close = 0
+
+            -- Force light thee for the browser preview
+            vim.g.mkdp_theme = "light"
         end,
         config = function()
             local readme_group = vim.api.nvim_create_augroup("ReadmeAutoPreview", { clear = true })
