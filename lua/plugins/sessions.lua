@@ -16,6 +16,23 @@ local function prune_orphaned_sessions()
     end
 end
 
+-- Check candidates in priority order' open the first one found
+local function open_project_entrypoint()
+    local entrypoints = {
+        "init.lua",
+        "src/main.rs",
+        "src/lib.rs",
+        "Cargo.toml",
+    }
+
+    for _, rel_path in ipairs(entrypoints) do
+        if vim.uv.fs_stat(rel_path) then
+            vim.cmd.edit(rel_path)
+            return
+        end
+    end
+end
+
 return {
     "folke/persistence.nvim",
     -- Load immediately or very early so the save-on-exit hook is always active
@@ -42,7 +59,15 @@ return {
                     return
                 end
 
-                require("persistence").load()
+                -- Determine session path for current working directory
+                local cwd = vim.fn.getcwd()
+                local session_file = vim.fn.stdpath("state") .. "/session/" .. cwd:gsub("/", "%%") .. ".vim"
+
+                if vim.uv.fs_stat(session_file) then
+                    require("persistence").load()
+                else
+                    open_project_entrypoint()
+                end
             end,
         })
     end,
