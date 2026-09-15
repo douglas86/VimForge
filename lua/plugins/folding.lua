@@ -342,10 +342,35 @@ return {
                 end
             end,
         })
+
+        vim.api.nvim_create_autocmd("BufWipeout", {
+            group = auto_fold_group,
+            callback = function(args)
+                buffer_kinds[args.buf] = nil
+            end,
+        })
+
+        vim.api.nvim_create_autocmd("BufWritePost", {
+            group = auto_fold_group,
+            pattern = { "*.rs", "*.toml", "*.lua" },
+            callback = function(args)
+                require("ufo").getFolds(args.buf, "treesitter")
+            end,
+        })
     end,
     keys = {
         { "zR", function() require("ufo").openAllFolds() end,  desc = "Open all folds" },
         { "zM", function() require("ufo").closeAllFolds() end, desc = "Close all folds" },
         { "za", "za",                                          desc = "Toggle fold under cursor" },
+        {
+            "K",
+            function()
+                local winid = require("ufo").peekFoldedLinesUnderCursor()
+                if not winid then
+                    vim.lsp.buf.hover()
+                end
+            end,
+            desc = "Hover documentation or preview fold",
+        },
     },
 }
