@@ -3,20 +3,30 @@
 local function prune_orphaned_sessions()
     local session_dir = vim.fn.stdpath("state") .. "/sessions/"
     local files = vim.fn.glob(session_dir .. "*.vim", false, true)
+    local current_cwd = vim.fn.getcwd()
 
     for _, file in ipairs(files) do
         local basename = vim.fs.basename(file)
-        -- Convert %home%user%project.vim back to /home/user/project
-        local original_dir = basename:gsub("%%", "/"):gsub("%.vim$", "")
 
-        -- If the original directory no longer exists on disk, delete the session file
-        if vim.fn.isdirectory(original_dir) == 0 then
+        -- Strip .vim extension
+        local clean_name = basename:gsub("%.vim$", "")
+
+        -- If it starts with %, removing it before prefixing / avoids double-slashes
+        if clean_name:sub(1, 1) == "%" then
+            clean_name = clean_name:sub(2)
+        end
+        local original_dir = "/" .. clean_name:gsub("%%", "/")
+
+        -- Resolve realpath in case ~/.config is a symlink or contains relative dots
+        local real_dir = vim.uv.fs_realpath(original_dir) or original_dir
+
+        -- NEVER delete the session for the project we are currently sitting in!
+        if real_dir ~= current_cwd and vim.fn.isdirectory(real_dir) == 0 then
             os.remove(file)
         end
     end
 end
 
--- Check candidates in priority order' open the first one found
 local function open_project_entrypoint()
     local entrypoints = {
         "init.lua",
@@ -35,37 +45,55 @@ end
 
 return {
     "folke/persistence.nvim",
-    -- Load immediately or very early so the save-on-exit hook is always active
     lazy = false,
     opts = {
         need = 1,
     },
     init = function()
-        -- Prune dead sessions on startup
         prune_orphaned_sessions()
 
-        -- Track when Neovim startup has completed
+        -- 1. Restore last cursor position when entering a buffer
+        vim.api.nvim_create_autocmd("BufReadPost", {
+            callback = function(args)
+                local mark = vim.api.nvim_buf_get_mark(args.buf, '"')
+                local line_count = vim.api.nvim_buf_line_count(args.buf)
+                if mark[1] > 0 and mark[1] <= line_count then
+                    pcall(vim.api.nvim_win_set_cursor, 0, mark)
+                end
+            end,
+        })
+
+        -- 2. Close sidebars and guarantee a final save before exit
+        vim.api.nvim_create_autocmd("VimLeavePre", {
+            callback = function()
+                pcall(vim.api.nvim_command, "Neotree close")
+                pcall(vim.api.nvim_command, "OutlineClose")
+
+                local cwd = vim.fn.getcwd()
+                if not (cwd:find("^/tmp") or cwd:find("^/var") or cwd:match("/%.git")) then
+                    require("persistence").save()
+                end
+            end,
+        })
+
+        -- 3. Startup guard and autosave debouncing
         local started = false
         vim.api.nvim_create_autocmd("UIEnter", {
             once = true,
             callback = function()
                 vim.defer_fn(function()
                     started = true
-                end, 300)
+                end, 200)
             end,
         })
 
-        -- Debounced auto-save timer for view-only browsing
         local save_timer = nil
         local function trigger_session_save(buf)
             if not started then return end
-
-            -- Only save for genuine, named disk files (ignore Telescope, floats, help)
             if vim.bo[buf].buftype ~= "" or vim.api.nvim_buf_get_name(buf) == "" then
                 return
             end
 
-            -- Debounce writes by 500ms so browsing files doesn't hammer disk IO
             if save_timer then
                 save_timer:stop()
             end
@@ -77,7 +105,6 @@ return {
 
         local auto_save_group = vim.api.nvim_create_augroup("PersistenceAutoSave", { clear = true })
 
-        -- 1. Save immediately on explicit file write
         vim.api.nvim_create_autocmd("BufWritePost", {
             group = auto_save_group,
             callback = function(args)
@@ -87,7 +114,6 @@ return {
             end,
         })
 
-        -- 2. Save on buffer navigation / viewing (debounced)
         vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
             group = auto_save_group,
             callback = function(args)
@@ -95,26 +121,30 @@ return {
             end,
         })
 
-        -- Auto-restore on startup if Neovim is launched with no file arguments
+        -- 4. Auto-restore on startup
         vim.api.nvim_create_autocmd("VimEnter", {
             nested = true,
             callback = function()
-                -- Skip if arguments were passed (e.g. nvim file.rs)
                 if vim.fn.argc() ~= 0 then
                     return
                 end
 
-                -- Skip if stdin was piped in
                 local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
                 if #lines > 1 or (#lines == 1 and lines[1] ~= "") then
                     return
                 end
 
-                -- Determine session path for current working directory
                 local cwd = vim.fn.getcwd()
-                local session_file = vim.fn.stdpath("state") .. "/sessions/" .. cwd:gsub("/", "%%") .. ".vim"
 
-                if vim.uv.fs_stat(session_file) then
+                -- Skip transient directories
+                if cwd:find("^/tmp") or cwd:find("^/var") or cwd:match("/%.git") then
+                    return
+                end
+
+                -- Use persistence's native session locator for the current directory
+                local session_file = require("persistence").current()
+
+                if session_file and vim.uv.fs_stat(session_file) then
                     require("persistence").load()
                 else
                     open_project_entrypoint()
