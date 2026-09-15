@@ -1,0 +1,49 @@
+-- lua/plugins/session.lua
+
+local function prune_orphaned_sessions()
+    local session_dir = vim.fn.stdpath("state") .. "/sessions/"
+    local files = vim.fn.glob(session_dir .. "*.vim", false, true)
+
+    for _, file in ipairs(files) do
+        local basename = vim.fs.basename(file)
+        -- Convert %home%user%project.vim back to /home/user/project
+        local original_dir = basename:gsub("%%", "/"):gsub("%.vim$", "")
+
+        -- If the original directory no longer exists on disk, delete the session file
+        if vim.fn.isdirectory(original_dir) == 0 then
+            os.remove(file)
+        end
+    end
+end
+
+return {
+    "folke/persistence.nvim",
+    -- Load immediately or very early so the save-on-exit hook is always active
+    lazy = false,
+    opts = {
+        need = 1,
+    },
+    init = function()
+        -- Prune dead sessions on startup
+        prune_orphaned_sessions()
+
+        -- Auto-restore on startup if Neovim is launched with no file arguments
+        vim.api.nvim_create_autocmd("VimEnter", {
+            nested = true,
+            callback = function()
+                -- Skip if arguments were passed (e.g. nvim file.rs)
+                if vim.fn.argc() ~= 0 then
+                    return
+                end
+
+                -- Skip if stdin was piped in
+                local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+                if #lines > 1 or (#lines == 1 and lines[1] ~= "") then
+                    return
+                end
+
+                require("persistence").load()
+            end,
+        })
+    end,
+}
