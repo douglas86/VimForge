@@ -22,6 +22,11 @@ local toml_kinds = {
     table        = { icon = "📋", hl = "UfoFoldTomlTable", badge_hl = "UfoFoldBadgeTomlTable" },
 }
 
+local lua_kinds = {
+    fn    = { icon = "󰊕", hl = "UfoFoldLuaFn", badge_hl = "UfoFoldBadgeLuaFn" },
+    table = { icon = "", hl = "UfoFoldLuaTable", badge_hl = "UfoFoldBadgeLuaTable" },
+}
+
 local function setup_fold_highlights()
     local highlights = {
         -- Rust Highlight groups
@@ -66,6 +71,12 @@ local function setup_fold_highlights()
         -- Fallback for generic TOML tables
         UfoFoldTomlTable        = { fg = "#9ccfd8", bg = "#233338", bold = true },
         UfoFoldBadgeTomlTable   = { fg = "#9ccfd8", bg = "#233338", italic = true },
+
+        -- Lua Highlights
+        UfoFoldLuaFn            = { fg = "#56b6c2", bg = "#21323b", bold = true }, -- Deep Teal
+        UfoFoldBadgeLuaFn       = { fg = "#9ccfd8", bg = "#21323b", italic = true },
+        UfoFoldLuaTable         = { fg = "#51a0cf", bg = "#212e3b", bold = true }, -- Lua Blue / Dark Steel
+        UfoFoldBadgeLuaTable    = { fg = "#51a0cf", bg = "#212e3b", italic = true },
 
         -- Fallback
         Folded                  = { bg = "#242234", fg = "#c4a7e7" },
@@ -178,6 +189,44 @@ local language_providers = {
 
         return ranges
     end,
+    lua = function(buf)
+        local ok, parser = pcall(vim.treesitter.get_parser, buf, "lua")
+        if not ok or not parser then return {} end
+
+        local tree = parser:parse()[1]
+        if not tree then return {} end
+
+        local query_str = [[
+            (function_declaration) @fn
+            (function_definition) @fn
+            (table_constructor) @table
+        ]]
+
+        local ok_query, query = pcall(vim.treesitter.query.parse, "lua", query_str)
+        if not ok_query or not query then return {} end
+
+        local ranges = {}
+        buffer_kinds[buf] = {}
+
+        for id, node in query:iter_captures(tree:root(), buf, 0, -1) do
+            local s_row, _, e_row, _ = node:range()
+            -- Only fold blocks that span more than 2 lines
+            if e_row - s_row > 2 then
+                local kind = query.captures[id]
+                -- Don't overwrite if an outer node already tagged this line
+                if not buffer_kinds[buf][s_row + 1] then
+                    buffer_kinds[buf][s_row + 1] = kind
+                end
+
+                table.insert(ranges, {
+                    startLine = s_row,
+                    endLine = e_row,
+                })
+            end
+        end
+
+        return ranges
+    end,
 }
 
 return {
@@ -209,7 +258,12 @@ return {
             local kind = kinds[lnum] or "default"
 
             local ft = vim.bo[cur_buf].filetype
-            local meta_table = ft == "toml" and toml_kinds or rust_kinds
+            local meta_table = rust_kinds
+            if ft == "toml" then
+                meta_table = toml_kinds
+            elseif ft == "lua" then
+                meta_table = lua_kinds
+            end
             local meta = meta_table[kind] or { icon = "󰅩", hl = "Folded", badge_hl = "UfoFoldBadge" }
 
             local lines_count = endLnum - lnum
@@ -274,7 +328,7 @@ return {
         local auto_fold_group = vim.api.nvim_create_augroup("CustomLanguageAutoFold", { clear = true })
         vim.api.nvim_create_autocmd("BufEnter", {
             group = auto_fold_group,
-            pattern = { "*.rs", "*.toml" },
+            pattern = { "*.rs", "*.toml", "*.lua" },
             callback = function(args)
                 local ft = vim.bo[args.buf].filetype
                 if language_providers[ft] then
