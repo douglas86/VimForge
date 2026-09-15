@@ -10,7 +10,7 @@ return {
         vim.o.foldenable = true
     end,
     opts = {
-        provider_selector = function(bufnr, filetype, buftype)
+        provider_selector = function(_, filetype)
             if filetype == "rust" then
                 return function(buf)
                     local ok, parser = pcall(vim.treesitter.get_parser, buf, "rust")
@@ -42,7 +42,7 @@ return {
                         (macro_definition) @macro
                         (union_item) @union
                     ]]
-                    local ok_q, query = pcall(vim.treesitter.query.parse, "rust", query_str)
+                    ok_q, query = pcall(vim.treesitter.query.parse, "rust", query_str)
                     if not ok_q or not query then return {} end
 
                     local ranges = {}
