@@ -140,10 +140,6 @@ return {
             local lines_count = endLnum - lnum
             local line_badge = string.format(" 󰁂 %d lines", lines_count)
 
-            -- Check for diagnostics within this fold range (0-indexed line numbers)
-            local diags = vim.diagnostic.get(cur_buf, {
-                lnum = lnum - 1,
-            })
             -- Filter to only diagnostics between start and end of fold
             local err_cnt, warn_cnt = 0, 0
             for _, d in ipairs(vim.diagnostic.get(cur_buf)) do
