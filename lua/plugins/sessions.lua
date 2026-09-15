@@ -44,6 +44,57 @@ return {
         -- Prune dead sessions on startup
         prune_orphaned_sessions()
 
+        -- Track when Neovim startup has completed
+        local started = false
+        vim.api.nvim_create_autocmd("UIEnter", {
+            once = true,
+            callback = function()
+                vim.defer_fn(function()
+                    started = true
+                end, 300)
+            end,
+        })
+
+        -- Debounced auto-save timer for view-only browsing
+        local save_timer = nil
+        local function trigger_session_save(buf)
+            if not started then return end
+
+            -- Only save for genuine, named disk files (ignore Telescope, floats, help)
+            if vim.bo[buf].buftype ~= "" or vim.api.nvim_buf_get_name(buf) == "" then
+                return
+            end
+
+            -- Debounce writes by 500ms so browsing files doesn't hammer disk IO
+            if save_timer then
+                save_timer:stop()
+            end
+
+            save_timer = vim.defer_fn(function()
+                require("persistence").save()
+            end, 500)
+        end
+
+        local auto_save_group = vim.api.nvim_create_augroup("PersistenceAutoSave", { clear = true })
+
+        -- 1. Save immediately on explicit file write
+        vim.api.nvim_create_autocmd("BufWritePost", {
+            group = auto_save_group,
+            callback = function(args)
+                if started and vim.bo[args.buf].buftype == "" and vim.api.nvim_buf_get_name(args.buf) ~= "" then
+                    require("persistence").save()
+                end
+            end,
+        })
+
+        -- 2. Save on buffer navigation / viewing (debounced)
+        vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
+            group = auto_save_group,
+            callback = function(args)
+                trigger_session_save(args.buf)
+            end,
+        })
+
         -- Auto-restore on startup if Neovim is launched with no file arguments
         vim.api.nvim_create_autocmd("VimEnter", {
             nested = true,
@@ -61,7 +112,7 @@ return {
 
                 -- Determine session path for current working directory
                 local cwd = vim.fn.getcwd()
-                local session_file = vim.fn.stdpath("state") .. "/session/" .. cwd:gsub("/", "%%") .. ".vim"
+                local session_file = vim.fn.stdpath("state") .. "/sessions/" .. cwd:gsub("/", "%%") .. ".vim"
 
                 if vim.uv.fs_stat(session_file) then
                     require("persistence").load()

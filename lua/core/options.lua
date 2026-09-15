@@ -41,16 +41,26 @@ config('lua_ls', {
 
 -- keymapings for nvim-cmp
 -- jump forward in snippets
-key.set({ "i", "s" }, "<C-f>", function ()
-   if ls.locally_jumpable(1) then
+key.set({ "i", "s" }, "<C-f>", function()
+    if ls.locally_jumpable(1) then
         ls.jump(1)
-   end
+    end
 end, { silent = true })
 -- jump backwards in snippets
-key.set({ "i", "s" }, "<C-b>", function ()
+key.set({ "i", "s" }, "<C-b>", function()
     if ls.jumpable(-1) then
         ls.jump(-1)
     else
         print("LuaSnip: No backward jump points found")
     end
 end, { silent = false })
+
+vim.opt.sessionoptions = {
+    "buffers",  -- Hidden and unlisted buffers
+    "curdir",   -- Working directory
+    "tabpages", -- Tabs and window layouts (splits)
+    "winsize",  -- Exact window dimensions (width/height or splits)
+    "help",     -- Help windows
+    "globals",  -- Global variables starting with uppercase (g:Var)
+    "skiprtp", -- Do not save 'runtimepath' into session file
+}
