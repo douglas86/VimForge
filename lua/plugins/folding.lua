@@ -1,5 +1,62 @@
 -- lua/plugins/folding.lua
--- lua/plugins/folding.lua
+
+-- In-memory cache for line kinds: buffer_kinds[bufnr][lnum_1indexed] = "struct" | "fn" | ...
+local buffer_kinds = {}
+
+local rust_kinds = {
+    struct = { icon = "📦", hl = "UfoFoldStruct", badge_hl = "UfoFoldBadgeStruct" },
+    enum   = { icon = "🏷️ ", hl = "UfoFoldEnum", badge_hl = "UfoFoldBadgeEnum" },
+    union  = { icon = "🔀", hl = "UfoFoldUnion", badge_hl = "UfoFoldBadgeUnion" },
+    fn     = { icon = "⚡", hl = "UfoFoldFn", badge_hl = "UfoFoldBadgeFn" },
+    impl   = { icon = "⚙️ ", hl = "UfoFoldImpl", badge_hl = "UfoFoldBadgeImpl" },
+    trait  = { icon = "📜", hl = "UfoFoldTrait", badge_hl = "UfoFoldBadgeTrait" },
+    module = { icon = "📁", hl = "UfoFoldMod", badge_hl = "UfoFoldBadgeMod" },
+    macro  = { icon = "🪄", hl = "UfoFoldMacro", badge_hl = "UfoFoldBadgeMacro" },
+}
+
+local function setup_fold_highlights()
+    local highlights = {
+        -- Struct (Wine / Rose)
+        UfoFoldStruct      = { fg = "#ea9a97", bg = "#382933", bold = true },
+        UfoFoldBadgeStruct = { fg = "#ebbcba", bg = "#382933", italic = true },
+
+        -- Enum (Amber / Gold)
+        UfoFoldEnum        = { fg = "#f6c177", bg = "#383129", bold = true },
+        UfoFoldBadgeEnum   = { fg = "#f6c177", bg = "#383129", italic = true },
+
+        -- Fn (Teal / Cyan)
+        UfoFoldFn          = { fg = "#56b6c2", bg = "#21323b", bold = true },
+        UfoFoldBadgeFn     = { fg = "#9ccfd8", bg = "#21323b", italic = true },
+
+        -- Impl (Purple / Iris)
+        UfoFoldImpl        = { fg = "#c4a7e7", bg = "#2f273f", bold = true },
+        UfoFoldBadgeImpl   = { fg = "#c4a7e7", bg = "#2f273f", italic = true },
+
+        -- Trait (Slate / Foam)
+        UfoFoldTrait       = { fg = "#9ccfd8", bg = "#233338", bold = true },
+        UfoFoldBadgeTrait  = { fg = "#9ccfd8", bg = "#233338", italic = true },
+
+        -- Module (Crimson / Love)
+        UfoFoldMod         = { fg = "#eb6f92", bg = "#3b222c", bold = true },
+        UfoFoldBadgeMod    = { fg = "#eb6f92", bg = "#3b222c", italic = true },
+
+        -- Macro (Cocoa / Coral)
+        UfoFoldMacro       = { fg = "#ebbcba", bg = "#3b2d35", bold = true },
+        UfoFoldBadgeMacro  = { fg = "#ebbcba", bg = "#3b2d35", italic = true },
+
+        -- Union (Lavender)
+        UfoFoldUnion       = { fg = "#e0def4", bg = "#2d2a3e", bold = true },
+        UfoFoldBadgeUnion  = { fg = "#e0def4", bg = "#2d2a3e", italic = true },
+
+        -- Fallback
+        Folded             = { bg = "#242234", fg = "#c4a7e7" },
+        UfoFoldBadge       = { fg = "#ebbcba", bg = "#242234", italic = true },
+    }
+
+    for name, hl_opts in pairs(highlights) do
+        vim.api.nvim_set_hl(0, name, hl_opts)
+    end
+end
 
 -- Language-specific fold extractors
 local language_providers = {
@@ -25,9 +82,15 @@ local language_providers = {
         if not ok_query or not query then return {} end
 
         local ranges = {}
-        for _, node in query:iter_captures(tree:root(), buf, 0, -1) do
+        buffer_kinds[buf] = {}
+
+        for id, node in query:iter_captures(tree:root(), buf, 0, -1) do
             local s_row, _, e_row, _ = node:range()
             if e_row > s_row then
+                local kind = query.captures[id]
+                -- Store 1-indexed to match fold_virt_text_handler's lnum parameter
+                buffer_kinds[buf][s_row + 1] = kind
+
                 table.insert(ranges, {
                     startLine = s_row,
                     endLine = e_row,
@@ -37,10 +100,6 @@ local language_providers = {
 
         return ranges
     end,
-
-    -- Add future languages here:
-    -- toml = function(buf) ... return ranges end,
-    -- python = function(buf) ... return ranges end,
 }
 
 return {
@@ -52,31 +111,56 @@ return {
         vim.o.foldlevel = 99
         vim.o.foldlevelstart = 99
         vim.o.foldenable = true
-
-        vim.api.nvim_set_hl(0, "Folded", { bg = "#242234", fg = "#c4a7e7", bold = true })
-        vim.api.nvim_set_hl(0, "UfoFoldBadge", { bg = "#393552", fg = "#ebbcba" })
     end,
     opts = {
         provider_selector = function(_, filetype)
-            -- If we have a custom extractor for this filetype, use it
             if language_providers[filetype] then
                 return language_providers[filetype]
             end
-
-            -- Default fallback for other languages (or nil to ignore)
             return function()
                 return nil
             end
         end,
+
+        fold_virt_text_handler = function(_, lnum, endLnum, width, _)
+            local cur_buf = vim.api.nvim_get_current_buf()
+            local raw_line = vim.api.nvim_buf_get_lines(cur_buf, lnum - 1, lnum, false)[1] or ""
+            local clean_line = raw_line:gsub("^%s*", ""):gsub("%s*{%s*$", "")
+
+            local kinds = buffer_kinds[cur_buf] or {}
+            local kind = kinds[lnum]
+            local meta = rust_kinds[kind] or { icon = "󰅩", hl = "Folded", badge_hl = "UfoFoldBadge" }
+
+            local lines_count = endLnum - lnum
+            local line_badge = string.format(" 󰁂 %d lines ", lines_count)
+
+            local text_len = vim.fn.strdisplaywidth(meta.icon .. " " .. clean_line .. line_badge)
+            local fill_width = math.max(0, width - text_len)
+            local padding = (" "):rep(fill_width)
+
+            return {
+                { meta.icon .. " ",  meta.hl },
+                { clean_line,        meta.hl },
+                { " " .. line_badge, meta.badge_hl }, -- Matches the construct's background
+                { padding,           meta.hl },
+            }
+        end,
     },
     config = function(_, opts)
+        setup_fold_highlights()
+
+        -- Reapply highlights if colorscheme changes
+        vim.api.nvim_create_autocmd("ColorScheme", {
+            callback = setup_fold_highlights,
+        })
+
         local ufo = require("ufo")
         ufo.setup(opts)
 
-        -- Auto-close folds for supported languages on buffer open
         local auto_fold_group = vim.api.nvim_create_augroup("CustomLanguageAutoFold", { clear = true })
         vim.api.nvim_create_autocmd("BufEnter", {
             group = auto_fold_group,
+            pattern = "*.rs",
             callback = function(args)
                 local ft = vim.bo[args.buf].filetype
                 if language_providers[ft] then
