@@ -51,6 +51,12 @@ local function setup_fold_highlights()
         -- Fallback
         Folded             = { bg = "#242234", fg = "#c4a7e7" },
         UfoFoldBadge       = { fg = "#ebbcba", bg = "#242234", italic = true },
+
+        -- Fold Diagnostics (inherit the same dark strip tones with bright alert text)
+        UfoFoldDiagError   = { fg = "#eb6f92", bold = true },
+        UfoFoldDiagWarn    = { fg = "#f6c177", bold = true },
+        UfoFoldDiagInfo    = { fg = "#9ccfd8" },
+        UfoFoldDiagHint    = { fg = "#908caa" },
     }
 
     for name, hl_opts in pairs(highlights) do
@@ -132,18 +138,55 @@ return {
             local meta = rust_kinds[kind] or { icon = "󰅩", hl = "Folded", badge_hl = "UfoFoldBadge" }
 
             local lines_count = endLnum - lnum
-            local line_badge = string.format(" 󰁂 %d lines ", lines_count)
+            local line_badge = string.format(" 󰁂 %d lines", lines_count)
 
-            local text_len = vim.fn.strdisplaywidth(meta.icon .. " " .. clean_line .. line_badge)
+            -- Check for diagnostics within this fold range (0-indexed line numbers)
+            local diags = vim.diagnostic.get(cur_buf, {
+                lnum = lnum - 1,
+            })
+            -- Filter to only diagnostics between start and end of fold
+            local err_cnt, warn_cnt = 0, 0
+            for _, d in ipairs(vim.diagnostic.get(cur_buf)) do
+                if d.lnum >= (lnum - 1) and d.lnum < endLnum then
+                    if d.severity == vim.diagnostic.severity.ERROR then
+                        err_cnt = err_cnt + 1
+                    elseif d.severity == vim.diagnostic.severity.WARN then
+                        warn_cnt = warn_cnt + 1
+                    end
+                end
+            end
+
+            -- Build the output segments
+            local res = {
+                { meta.icon .. " ",  meta.hl },
+                { clean_line,        meta.hl },
+                { " " .. line_badge, meta.badge_hl },
+            }
+
+            local diag_text_len = 0
+            if err_cnt > 0 then
+                local str = string.format("  󰅚 %d", err_cnt)
+                -- Dynamically set the diagnostic background to match the row's background
+                vim.api.nvim_set_hl(0, "UfoDiagErrRow_" .. kind,
+                    { fg = "#eb6f92", bg = vim.api.nvim_get_hl(0, { name = meta.hl }).bg, bold = true })
+                table.insert(res, { str, "UfoDiagErrRow_" .. kind })
+                diag_text_len = diag_text_len + vim.fn.strdisplaywidth(str)
+            end
+
+            if warn_cnt > 0 then
+                local str = string.format("  󰀪 %d", warn_cnt)
+                vim.api.nvim_set_hl(0, "UfoDiagWarnRow_" .. kind,
+                    { fg = "#f6c177", bg = vim.api.nvim_get_hl(0, { name = meta.hl }).bg, bold = true })
+                table.insert(res, { str, "UfoDiagWarnRow_" .. kind })
+                diag_text_len = diag_text_len + vim.fn.strdisplaywidth(str)
+            end
+
+            local text_len = vim.fn.strdisplaywidth(meta.icon .. " " .. clean_line .. line_badge) + diag_text_len
             local fill_width = math.max(0, width - text_len)
             local padding = (" "):rep(fill_width)
 
-            return {
-                { meta.icon .. " ",  meta.hl },
-                { clean_line,        meta.hl },
-                { " " .. line_badge, meta.badge_hl }, -- Matches the construct's background
-                { padding,           meta.hl },
-            }
+            table.insert(res, { padding, meta.hl })
+            return res
         end,
     },
     config = function(_, opts)
