@@ -5,103 +5,83 @@ return {
     event = "BufReadPost",
     init = function()
         vim.o.foldcolumn = "1"
-        vim.o.foldlevel = 0
-        vim.o.foldlevelstart = 0
+        vim.o.foldlevel = 99
+        vim.o.foldlevelstart = 99
         vim.o.foldenable = true
-        vim.opt.foldignore = "" -- Prevent Vim from swallowing blank lines into adjacent
-
-        -- Banner highlight styling
-        vim.api.nvim_set_hl(0, "Folded", { bg = "#242234", fg = "#c4a7e7", bold = true })
-        vim.api.nvim_set_hl(0, "UfoFoldBadge", { bg = "#393552", fg = "#ebbcba" })
     end,
     opts = {
-        provider_selector = function(_, filetype, _)
-            if filetype == "rust" or filetype == "toml" then
-                return { "treesitter", "indent" }
-            end
-            return { "lsp", "indent" }
-        end,
+        provider_selector = function(bufnr, filetype, buftype)
+            if filetype == "rust" then
+                return function(buf)
+                    local ok, parser = pcall(vim.treesitter.get_parser, buf, "rust")
+                    if not ok or not parser then
+                        vim.notify("Provider: parser failed", vim.log.levels.WARN)
+                        return {}
+                    end
 
-        fold_virt_text_handler = function(_, lnum, endLnum, width, _)
-            local ft = vim.bo.filetype
-            local line = vim.api.nvim_buf_get_lines(0, lnum - 1, lnum, false)[1] or ""
-            local icon = "󰅩"
-            local clean_line = line:gsub("^%s*", "")
+                    local tree = parser:parse()[1]
+                    if not tree then
+                        vim.notify("Provider: empty tree", vim.log.levels.WARN)
+                        return {}
+                    end
 
-            if ft == "rust" then
-                if line:match("%f[%w]struct%f[%W]") then
-                    icon = "📦"
-                elseif line:match("%f[%w]enum%f[%W]") then
-                    icon = "🏷️ "
-                elseif line:match("%f[%w]impl%f[%W]") then
-                    icon = "⚙️ "
-                elseif line:match("%f[%w]fn%f[%W]") then
-                    icon = "⚡"
+                    local ok_q, query = pcall(vim.treesitter.query.parse, "rust", "(struct_item) @struct")
+                    if not ok_q or not query then
+                        vim.notify("Provider: query failed", vim.log.levels.ERROR)
+                        return {}
+                    end
+
+                    -- Target both structs and enums
+                    local query_str = [[
+                        (struct_item) @struct
+                        (enum_item) @enum
+                        (function_item) @fn
+                        (impl_item) @impl
+                        (trait_item) @trait
+                        (mod_item) @module
+                        (macro_definition) @macro
+                        (union_item) @union
+                    ]]
+                    local ok_q, query = pcall(vim.treesitter.query.parse, "rust", query_str)
+                    if not ok_q or not query then return {} end
+
+                    local ranges = {}
+                    for _, node in query:iter_captures(tree:root(), buf, 0, -1) do
+                        local s_row, _, e_row, _ = node:range()
+                        if e_row > s_row then
+                            table.insert(ranges, {
+                                startLine = s_row,
+                                endLine = e_row,
+                            })
+                        end
+                    end
+
+                    vim.notify("Provider generated " .. #ranges .. " struct fold ranges", vim.log.levels.INFO)
+                    return ranges
                 end
-                clean_line = clean_line:gsub("%s*{%s*$", "")
-            elseif ft == "toml" then
-                if line:match("%[package%]") then
-                    icon = "📦"
-                elseif line:match("%[.*dependenc.*%]") then
-                    icon = "📚"
-                elseif line:match("%[features%]") then
-                    icon = "🎛️ "
-                elseif line:match("%[.*profile.*%]") or line:match("%[workspace%]") then
-                    icon = "⚙️ "
-                else
-                    icon = "📄"
-                end
             end
-
-            local lines_count = endLnum - lnum
-            local line_badge = string.format(" 󰁂 %d lines ", lines_count)
-
-            local text_len = vim.fn.strdisplaywidth(icon .. " " .. clean_line .. line_badge)
-            local fill_width = math.max(0, width - text_len)
-            local padding = (" "):rep(fill_width)
-
-            return {
-                { icon .. " ",       "Folded" },
-                { clean_line,        "Folded" },
-                { " " .. line_badge, "UfoFoldBadge" },
-                { padding,           "Folded" },
-            }
+            return function()
+                return nil
+            end
         end,
     },
     config = function(_, opts)
         local ufo = require("ufo")
         ufo.setup(opts)
 
-        vim.api.nvim_create_autocmd("FileType", {
-            pattern = { "toml", "rust" },
-            callback = function()
-                -- Give each fold a clean visual break
-                vim.opt_local.fillchars:append({ fold = " " })
-            end,
-        })
-
-        -- Auto-open folds when diagnostics exist inside them
-        local fold_diag_group = vim.api.nvim_create_augroup("UfoDiagnosticAutoUnfold", { clear = true })
-        vim.api.nvim_create_autocmd("DiagnosticChanged", {
-            group = fold_diag_group,
+        local rust_fold_group = vim.api.nvim_create_augroup("RustStructFoldOnly", { clear = true })
+        vim.api.nvim_create_autocmd("BufEnter", {
+            group = rust_fold_group,
+            pattern = "*.rs",
             callback = function(args)
-                local bufnr = args.buf
-                local ft = vim.bo[bufnr].filetype
-                if ft ~= "rust" and ft ~= "toml" then return end
-
-                local diagnostics = vim.diagnostic.get(bufnr, {
-                    severity = { min = vim.diagnostic.severity.WARN },
-                })
-                if #diagnostics == 0 then return end
-
-                vim.api.nvim_buf_call(bufnr, function()
-                    for _, diag in ipairs(diagnostics) do
-                        local line = diag.lnum + 1
-                        if vim.fn.foldclosed(line) ~= -1 then
-                            vim.cmd(string.format("%dnormal! zv", line))
-                        end
+                vim.defer_fn(function()
+                    if vim.api.nvim_buf_is_valid(args.buf) and vim.bo[args.buf].filetype == "rust" then
+                        vim.notify("BufEnter: attempting closeAllFolds()", vim.log.levels.INFO)
+                        vim.api.nvim_buf_call(args.buf, function()
+                            ufo.closeAllFolds()
+                        end)
                     end
-                end)
+                end, 150)
             end,
         })
     end,

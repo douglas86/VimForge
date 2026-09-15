@@ -4,8 +4,7 @@ return {
     -- Rust LSP & Tooling (Wraps rust-analyzer)
     {
         "mrcjkb/rustaceanvim",
-        version = "^5", -- Recommended for Neovim 0.10+
-        lazy = false,   -- Plugin handles its own lazy-loading via filetype
+        lazy = false, -- Plugin handles its own lazy-loading via filetype
         init = function()
             vim.g.rustaceanvim = {
                 server = {
