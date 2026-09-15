@@ -14,49 +14,55 @@ local rust_kinds = {
     macro  = { icon = "🪄", hl = "UfoFoldMacro", badge_hl = "UfoFoldBadgeMacro" },
 }
 
+local toml_kinds = {
+    table       = { icon = "📋", hl = "UfoFoldTomlTable", badge_hl = "UfoFoldBadgeTomlTable" },
+    table_array = { icon = "📑", hl = "UfoFoldTomlArray", badge_hl = "UfoFoldBadgeTomlArray" },
+    array       = { icon = "📐", hl = "UfoFoldTomlArray", badge_hl = "UfoFoldBadgeTomlArray" },
+}
+
 local function setup_fold_highlights()
     local highlights = {
+        -- Rust Highlight groups
         -- Struct (Wine / Rose)
-        UfoFoldStruct      = { fg = "#ea9a97", bg = "#382933", bold = true },
-        UfoFoldBadgeStruct = { fg = "#ebbcba", bg = "#382933", italic = true },
-
+        UfoFoldStruct         = { fg = "#ea9a97", bg = "#382933", bold = true },
+        UfoFoldBadgeStruct    = { fg = "#ebbcba", bg = "#382933", italic = true },
         -- Enum (Amber / Gold)
-        UfoFoldEnum        = { fg = "#f6c177", bg = "#383129", bold = true },
-        UfoFoldBadgeEnum   = { fg = "#f6c177", bg = "#383129", italic = true },
-
+        UfoFoldEnum           = { fg = "#f6c177", bg = "#383129", bold = true },
+        UfoFoldBadgeEnum      = { fg = "#f6c177", bg = "#383129", italic = true },
         -- Fn (Teal / Cyan)
-        UfoFoldFn          = { fg = "#56b6c2", bg = "#21323b", bold = true },
-        UfoFoldBadgeFn     = { fg = "#9ccfd8", bg = "#21323b", italic = true },
-
+        UfoFoldFn             = { fg = "#56b6c2", bg = "#21323b", bold = true },
+        UfoFoldBadgeFn        = { fg = "#9ccfd8", bg = "#21323b", italic = true },
         -- Impl (Purple / Iris)
-        UfoFoldImpl        = { fg = "#c4a7e7", bg = "#2f273f", bold = true },
-        UfoFoldBadgeImpl   = { fg = "#c4a7e7", bg = "#2f273f", italic = true },
-
+        UfoFoldImpl           = { fg = "#c4a7e7", bg = "#2f273f", bold = true },
+        UfoFoldBadgeImpl      = { fg = "#c4a7e7", bg = "#2f273f", italic = true },
         -- Trait (Slate / Foam)
-        UfoFoldTrait       = { fg = "#9ccfd8", bg = "#233338", bold = true },
-        UfoFoldBadgeTrait  = { fg = "#9ccfd8", bg = "#233338", italic = true },
-
+        UfoFoldTrait          = { fg = "#9ccfd8", bg = "#233338", bold = true },
+        UfoFoldBadgeTrait     = { fg = "#9ccfd8", bg = "#233338", italic = true },
         -- Module (Crimson / Love)
-        UfoFoldMod         = { fg = "#eb6f92", bg = "#3b222c", bold = true },
-        UfoFoldBadgeMod    = { fg = "#eb6f92", bg = "#3b222c", italic = true },
-
+        UfoFoldMod            = { fg = "#eb6f92", bg = "#3b222c", bold = true },
+        UfoFoldBadgeMod       = { fg = "#eb6f92", bg = "#3b222c", italic = true },
         -- Macro (Cocoa / Coral)
-        UfoFoldMacro       = { fg = "#ebbcba", bg = "#3b2d35", bold = true },
-        UfoFoldBadgeMacro  = { fg = "#ebbcba", bg = "#3b2d35", italic = true },
-
+        UfoFoldMacro          = { fg = "#ebbcba", bg = "#3b2d35", bold = true },
+        UfoFoldBadgeMacro     = { fg = "#ebbcba", bg = "#3b2d35", italic = true },
         -- Union (Lavender)
-        UfoFoldUnion       = { fg = "#e0def4", bg = "#2d2a3e", bold = true },
-        UfoFoldBadgeUnion  = { fg = "#e0def4", bg = "#2d2a3e", italic = true },
+        UfoFoldUnion          = { fg = "#e0def4", bg = "#2d2a3e", bold = true },
+        UfoFoldBadgeUnion     = { fg = "#e0def4", bg = "#2d2a3e", italic = true },
+
+        -- TOML / Cargo highlights
+        UfoFoldTomlTable      = { fg = "#f6c177", bg = "#332e29", bold = true }, -- Warm Ochre / Amber
+        UfoFoldBadgeTomlTable = { fg = "#f6c177", bg = "#332e29", italic = true },
+        UfoFoldTomlArray      = { fg = "#9ccfd8", bg = "#213238", bold = true }, -- Slate Cyan
+        UfoFoldBadgeTomlArray = { fg = "#9ccfd8", bg = "#213238", italic = true },
 
         -- Fallback
-        Folded             = { bg = "#242234", fg = "#c4a7e7" },
-        UfoFoldBadge       = { fg = "#ebbcba", bg = "#242234", italic = true },
+        Folded                = { bg = "#242234", fg = "#c4a7e7" },
+        UfoFoldBadge          = { fg = "#ebbcba", bg = "#242234", italic = true },
 
         -- Fold Diagnostics (inherit the same dark strip tones with bright alert text)
-        UfoFoldDiagError   = { fg = "#eb6f92", bold = true },
-        UfoFoldDiagWarn    = { fg = "#f6c177", bold = true },
-        UfoFoldDiagInfo    = { fg = "#9ccfd8" },
-        UfoFoldDiagHint    = { fg = "#908caa" },
+        UfoFoldDiagError      = { fg = "#eb6f92", bold = true },
+        UfoFoldDiagWarn       = { fg = "#f6c177", bold = true },
+        UfoFoldDiagInfo       = { fg = "#9ccfd8" },
+        UfoFoldDiagHint       = { fg = "#908caa" },
     }
 
     for name, hl_opts in pairs(highlights) do
@@ -106,6 +112,47 @@ local language_providers = {
 
         return ranges
     end,
+    toml = function(buf)
+        local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+        local total_lines = #lines
+        if total_lines == 0 then return {} end
+
+        local ranges = {}
+        buffer_kinds[buf] = {}
+
+        -- Find all section headers: [table] or [[table_array]]
+        local headers = {}
+        for i, line in ipairs(lines) do
+            local clean = line:match("^%s*(.-)%s*$")
+            if clean:match("^%[%[.+%]%]$") then
+                table.insert(headers, { row = i - 1, kind = "table_array" })
+            elseif clean:match("^%[.+%]$") then
+                table.insert(headers, { row = i - 1, kind = "table" })
+            end
+        end
+
+        -- Create fold ranges spanning from each header to the line before the next header
+        for idx, h in ipairs(headers) do
+            local s_row = h.row
+            local next_h = headers[idx + 1]
+            local raw_e_row = next_h and (next_h.row - 1) or (total_lines - 1)
+
+            -- Trim trailing blank lines from the fold range
+            while raw_e_row > s_row and lines[raw_e_row + 1]:match("^%s*$") do
+                raw_e_row = raw_e_row - 1
+            end
+
+            if raw_e_row > s_row then
+                buffer_kinds[buf][s_row + 1] = h.kind
+                table.insert(ranges, {
+                    startLine = s_row,
+                    endLine = raw_e_row,
+                })
+            end
+        end
+
+        return ranges
+    end,
 }
 
 return {
@@ -132,10 +179,13 @@ return {
             local cur_buf = vim.api.nvim_get_current_buf()
             local raw_line = vim.api.nvim_buf_get_lines(cur_buf, lnum - 1, lnum, false)[1] or ""
             local clean_line = raw_line:gsub("^%s*", ""):gsub("%s*{%s*$", "")
-
+            -- 1. Retrieve the stored kind for this line
             local kinds = buffer_kinds[cur_buf] or {}
-            local kind = kinds[lnum]
-            local meta = rust_kinds[kind] or { icon = "󰅩", hl = "Folded", badge_hl = "UfoFoldBadge" }
+            local kind = kinds[lnum] or "default"
+
+            local ft = vim.bo[cur_buf].filetype
+            local meta_table = ft == "toml" and toml_kinds or rust_kinds
+            local meta = meta_table[kind] or { icon = "󰅩", hl = "Folded", badge_hl = "UfoFoldBadge" }
 
             local lines_count = endLnum - lnum
             local line_badge = string.format(" 󰁂 %d lines", lines_count)
@@ -199,7 +249,7 @@ return {
         local auto_fold_group = vim.api.nvim_create_augroup("CustomLanguageAutoFold", { clear = true })
         vim.api.nvim_create_autocmd("BufEnter", {
             group = auto_fold_group,
-            pattern = "*.rs",
+            pattern = { "*.rs", "*.toml" },
             callback = function(args)
                 local ft = vim.bo[args.buf].filetype
                 if language_providers[ft] then
