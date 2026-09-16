@@ -6,17 +6,17 @@ local key = vim.keymap
 local opt = vim.opt
 
 -- settings
-opt.number = true -- show line numbers
-opt.mouse = 'a' -- Enable mouse support
-opt.ignorecase = true -- Case-insensitive searching
-opt.smartcase = true -- ... until you use a capital letter
-opt.undofile = true -- Persistent undo (even after closing nvim)
-opt.termguicolors = true -- Better color support for modern terminals
-opt.scrolloff = 8 -- Keep 8 lines visible above/below cursor
+opt.number = true             -- show line numbers
+opt.mouse = 'a'               -- Enable mouse support
+opt.ignorecase = true         -- Case-insensitive searching
+opt.smartcase = true          -- ... until you use a capital letter
+opt.undofile = true           -- Persistent undo (even after closing nvim)
+opt.termguicolors = true      -- Better color support for modern terminals
+opt.scrolloff = 8             -- Keep 8 lines visible above/below cursor
 opt.clipboard = 'unnamedplus' -- this ensures you can yank/paste to your COSMIC system clipboard
-opt.tabstop = 4 -- Number of spaces a tab represents
-opt.shiftwidth = 4 -- Number of spaces for indentation
-opt.expandtab = true -- Convert tabs to spaces
+opt.tabstop = 4               -- Number of spaces a tab represents
+opt.shiftwidth = 4            -- Number of spaces for indentation
+opt.expandtab = true          -- Convert tabs to spaces
 
 -- global settings
 g.mapleader = ' '
