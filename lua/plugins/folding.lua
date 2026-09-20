@@ -326,14 +326,22 @@ return {
         ufo.setup(opts)
 
         local auto_fold_group = vim.api.nvim_create_augroup("CustomLanguageAutoFold", { clear = true })
-        vim.api.nvim_create_autocmd("BufEnter", {
+
+        -- 1. FOLD ONLY ON INITIAL FILE LOAD
+        vim.api.nvim_create_autocmd("BufReadPost", {
             group = auto_fold_group,
             pattern = { "*.rs", "*.toml", "*.lua" },
             callback = function(args)
+                -- Only run if not already folded in this buffer session
+                if vim.b[args.buf].initial_folded then
+                    return
+                end
+                vim.b[args.buf].initial_folded = true
+
                 local ft = vim.bo[args.buf].filetype
                 if language_providers[ft] then
                     vim.defer_fn(function()
-                        if vim.api.nvim_buf_is_valid(args.buf) and vim.bo[args.buf].filetype == ft then
+                        if vim.api.nvim_buf_is_valid(args.buf) then
                             vim.api.nvim_buf_call(args.buf, function()
                                 ufo.closeAllFolds()
                             end)
@@ -343,13 +351,16 @@ return {
             end,
         })
 
-        vim.api.nvim_create_autocmd("BufWipeout", {
+        -- 2. CLEAN UP BUFFER STATE ON CLOSE/WIPEOUT
+        vim.api.nvim_create_autocmd({ "BufWipeout", "BufDelete" }, {
             group = auto_fold_group,
             callback = function(args)
                 buffer_kinds[args.buf] = nil
+                vim.b[args.buf].initial_folded = nil
             end,
         })
 
+        -- 3. REFRESH FOLDS ON SAVE
         vim.api.nvim_create_autocmd("BufWritePost", {
             group = auto_fold_group,
             pattern = { "*.rs", "*.toml", "*.lua" },
